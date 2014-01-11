@@ -120,6 +120,8 @@ class View(object):
                 if rect:
                     image = self.parts_sprite_sheet.subsurface(rect)
                     rect.center = (random.randint(30, 570), random.randint(230, 370))
+                    if self.model.builder.part_used(part):
+                        rect.center = (random.randint(30, 570), random.randint(430, 570))
                     sprite = DraggableSprite(part, image, rect)
                     self.sprites.append(sprite)
                 else:

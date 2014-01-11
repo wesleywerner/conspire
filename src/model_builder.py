@@ -12,8 +12,7 @@ LEVEL_PARTS = {
 
 # parts a level may start off with as in use
 DEFAULT_PARTS = {
-    1: (),
-    2: (),
+    1: ('human head',),
 }
 
 # parts required to complete a level
@@ -60,6 +59,7 @@ class Builder(object):
         
         """
 
+        self.refresh_parts()
         combined = []
         for k, v in LEVEL_PARTS.items():
             if k <= self.model.level:
@@ -85,6 +85,14 @@ class Builder(object):
         if part in self._used_parts:
             self._used_parts.remove(part)
             print('removed part %s' % (part,))
+
+    def part_used(self, part):
+        """
+        Returns if a part is in use.
+        
+        """
+        
+        return part in self._used_parts
 
     @property
     def accuracy(self):
