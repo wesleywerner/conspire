@@ -37,7 +37,10 @@ PARTS_RECT = {
 
 UFO_RECT = (6,6,88,88)
 FIGHTER_RECT = (113,12,74,75)
-MISSILE_RECT = (180,12,4,28)
+MISSILE_RECT = (194,12,4,28)
+RADAR_RECT = (210,10,80,80)
+RADAR_HOSTILE_RECT = (245,3,4,4)
+RADAR_GOAL_RECT = (250,3,4,4)
 
 
 class DraggableSprite(pygame.sprite.Sprite):
@@ -119,17 +122,50 @@ class UFOSprite(pygame.sprite.Sprite):
 
 class FighterJetSprite(pygame.sprite.Sprite):
     
-    def __init__(self, name, image, rect, target):
+    def __init__(self, image, target):
         pygame.sprite.Sprite.__init__(self)
-        self.name = name
+        self.name = 'Fighter Jet'
         self.image = image
-        self.rect = rect
+        self.rect = image.get_rect()
         self.target = target
-        
+        self.reload_time = 0
+        self.movement = 0
+        self.fly_region = CANVAS_SIZE[1] / 2
+        self.movement_speed = random.randint(10.0, 30.0)
+    
+    def _clamp(self):
+        if self.rect.left < 10:
+            self.rect.left = 10 
+        if self.rect.top > CANVAS_SIZE[1] - 100:
+            self.rect.top = CANVAS_SIZE[1] - 100
+        if self.rect.right > CANVAS_SIZE[0] - 10:
+            self.rect.right = CANVAS_SIZE[0] - 10 
+        if self.rect.top < self.fly_region:
+            self.rect.top = self.fly_region
+
     def update(self):
         
         # move inline with target and fire when ready and able.
-        pass
+        diff = self.target.rect.left - self.rect.left
+        
+        if abs(diff) > self.movement_speed:
+            self.rect.left += diff / self.movement_speed
+        else:
+            if self.reload_time > 0:
+                self.reload_time -= 1
+            else:
+                print('Fire!')
+                self.reload_time = 30
+        
+        if random.randint(1, 100) < 5:
+            self.movement = -1
+        elif random.randint(1, 100) < 5:
+            self.movement = 1
+        elif random.randint(1, 100) < 5:
+            self.movement = 0
+        
+        self.rect.top += self.movement * 4
+        self._clamp()
 
 
 class View(object):
@@ -191,6 +227,9 @@ class View(object):
         self.confirm_image = pygame.image.load(os.path.join('..', 'data', 'confirm-dialog.png')).convert()
         self.confirm_action = None
         
+        # player objects
+        self.ufo = None
+        
     def load_background(self):
         """
         Load a background depending on the game state.
@@ -229,11 +268,22 @@ class View(object):
         if self.model.state == STATE_UFO:
             
             # player ufo craft
-            ufo = UFOSprite(self.ufo_sprite_sheet.subsurface(UFO_RECT))
             # start off at the bottom center of the screen
-            ufo.fly_region = CANVAS_SIZE[1] / 2
-            ufo.rect.center = (CANVAS_SIZE[0] / 2, CANVAS_SIZE[1])
-            self.sprites.append(ufo)
+            self.ufo = UFOSprite(self.ufo_sprite_sheet.subsurface(UFO_RECT))
+            self.ufo.fly_region = CANVAS_SIZE[1] / 2
+            self.ufo.rect.center = (CANVAS_SIZE[0] / 2, CANVAS_SIZE[1])
+            self.sprites.append(self.ufo)
+            self.add_fighter_jet()
+            self.add_fighter_jet()
+
+    def add_fighter_jet(self):
+        # add some jets
+        jet = FighterJetSprite(
+            self.ufo_sprite_sheet.subsurface(FIGHTER_RECT),
+            self.sprites[0])
+        jet.rect.center = (300, 550)
+        jet.rect.left = random.randint(100, 400)
+        self.sprites.append(jet)
 
     def draw_hover_part_name(self):
         """
@@ -287,6 +337,17 @@ class View(object):
             
             self.draw_hover_part_name()
             self.draw_body_accuracy()
+        
+        elif self.model.state == STATE_UFO:
+            
+            # radar
+            if not self.ufo.autopilot:
+                self.canvas.blit(
+                    self.ufo_sprite_sheet.subsurface(RADAR_RECT),
+                    (10, 10))
+                #RADAR_RECT = (210,10,80,80)
+                #RADAR_HOSTILE_RECT = (245,3,4,4)
+                #RADAR_GOAL_RECT = (250,3,4,4)
         
         # draw sprites
         for sprite in self.sprites:
