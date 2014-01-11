@@ -577,10 +577,23 @@ class View(object):
         """
         
         if self.model.state == STATE_BUILD:
+
             BRIEF_TEXT_HEIGHT = 150
+
+            brief_text = model_builder.LEVEL_SCENARIOS[self.model.level - 1]
+            if self.model.level > 1:
+                if self.model.mission_success:
+                    brief_text = 'My commendations on your last ' \
+                        'mission, what a success!\n' + brief_text
+                else:
+                    brief_text = 'Failure like your last mission will ' \
+                        'not be tolerated. Let us hope your next ' \
+                        'mission goes better...\n' + brief_text
+                    
             sprite = pygame.sprite.Sprite()
+
             image = self.print_wrapped_text(
-                model_builder.LEVEL_SCENARIOS[self.model.level - 1], 
+                brief_text, 
                 30,
                 self.font,
                 TEXT
