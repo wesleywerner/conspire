@@ -132,6 +132,7 @@ class FighterJetSprite(pygame.sprite.Sprite):
         self.movement = 0
         self.fly_region = CANVAS_SIZE[1] / 2
         self.movement_speed = random.randint(10.0, 30.0)
+        self.autopilot = True
     
     def _clamp(self):
         if self.rect.left < 10:
@@ -145,27 +146,32 @@ class FighterJetSprite(pygame.sprite.Sprite):
 
     def update(self):
         
-        # move inline with target and fire when ready and able.
-        diff = self.target.rect.left - self.rect.left
-        
-        if abs(diff) > self.movement_speed:
-            self.rect.left += diff / self.movement_speed
+        if self.autopilot:
+            self.rect.top -= 4
+            if self.rect.bottom < CANVAS_SIZE[1] - 100:
+                self.autopilot = False
         else:
-            if self.reload_time > 0:
-                self.reload_time -= 1
+        
+            # move inline with target and fire when ready and able.
+            diff = self.target.rect.left - self.rect.left
+            
+            if abs(diff) > self.movement_speed:
+                self.rect.left += diff / self.movement_speed
             else:
-                print('Fire!')
-                self.reload_time = 30
-        
-        if random.randint(1, 100) < 5:
-            self.movement = -1
-        elif random.randint(1, 100) < 5:
-            self.movement = 1
-        elif random.randint(1, 100) < 5:
-            self.movement = 0
-        
-        self.rect.top += self.movement * 4
-        self._clamp()
+                if self.reload_time > 0:
+                    self.reload_time -= 1
+                else:
+                    print('Fire!')
+                    self.reload_time = 30
+            
+            if random.randint(1, 100) < 5:
+                self.movement = -1
+            elif random.randint(1, 100) < 5:
+                self.movement = 1
+            elif random.randint(1, 100) < 5:
+                self.movement = 0
+            self.rect.top += self.movement * 4
+            self._clamp()
 
 
 class View(object):
@@ -279,7 +285,7 @@ class View(object):
         jet = FighterJetSprite(
             self.ufo_sprite_sheet.subsurface(FIGHTER_RECT),
             self.sprites[0])
-        jet.rect.center = (300, 550)
+        jet.rect.top = CANVAS_SIZE[1]
         jet.rect.left = random.randint(100, 400)
         self.sprites.append(jet)
 
@@ -339,13 +345,7 @@ class View(object):
         elif self.model.state == STATE_UFO:
             
             # radar
-            if not self.ufo_sprite.autopilot:
-                self.canvas.blit(
-                    self.ufo_sprite_sheet.subsurface(RADAR_RECT),
-                    (10, 10))
-                #RADAR_RECT = (210,10,80,80)
-                #RADAR_HOSTILE_RECT = (245,3,4,4)
-                #RADAR_GOAL_RECT = (250,3,4,4)
+            self.draw_tactical_radar()
         
         # draw sprites
         for sprite in self.sprites:
@@ -370,6 +370,36 @@ class View(object):
         # flip and tick
         pygame.display.flip()
         self.clock.tick(FRAMERATE)
+
+    def draw_tactical_radar(self):
+        
+        if not self.ufo_sprite.autopilot:
+
+            # base image
+            self.canvas.blit(
+                self.ufo_sprite_sheet.subsurface(RADAR_RECT),
+                (10, 10))
+            
+            # enemy fighters
+            incoming_jets = self.model.ufotactical.jet_distances
+            for enemy in incoming_jets:
+                # draw a dot for it's distance.
+                epos = (
+                    50,
+                    50 + ((enemy / 500.0) * 40)
+                    )
+                self.canvas.blit(
+                    self.ufo_sprite_sheet.subsurface(RADAR_HOSTILE_RECT),
+                    epos)
+
+            # dot for goal distance
+            epos = (
+                50 + (RADAR_GOAL_RECT[3] / 2), 
+                50 - ((self.model.ufotactical.distance_from_goal / 2000.0) * 40)
+                )
+            self.canvas.blit(
+                self.ufo_sprite_sheet.subsurface(RADAR_GOAL_RECT),
+                epos)
 
     def print_wrapped_text(self, sentence, maxlength):
         """

@@ -10,7 +10,7 @@ class UFOTactical(object):
         self.clock = 0
 
     def reset_goal(self):
-        self.distance_from_goal = 10 + self.model.level + random.randint(0, 2)
+        self.distance_from_goal = 750
         self.fighter_jets = []
     
     @property
@@ -22,12 +22,15 @@ class UFOTactical(object):
     
     def update(self):
         self.clock += 1
+        self.distance_from_goal -= 1
+        if self.distance_from_goal < 0:
+            self.distance_from_goal = 0
         
         if self.clock > 260:
 
             if len(self.fighter_jets) < self.max_jets:
-                if random.randint(1, 100) < 1:
-                    self.fighter_jets.append(random.randint(150, 500))
+                if random.randint(1, 100) < 10:
+                    self.fighter_jets.append(random.randint(150, 300))
             
             for index, dist in enumerate(self.fighter_jets):
                 if dist > 0:
@@ -37,5 +40,5 @@ class UFOTactical(object):
                         self.new_jets += 1
 
     @property
-    def jets_distances(self):
+    def jet_distances(self):
         return self.fighter_jets
