@@ -260,6 +260,7 @@ class View(object):
         # scenario description
         self.brief_offset = 0
         self.brief_sprite = None
+        self.tactical_info_sprite = None
         
         # sprite storage
         self.dragging_sprite = None
@@ -274,6 +275,9 @@ class View(object):
         # confirm dialog
         self.confirm_image = pygame.image.load(os.path.join('..', 'data', 'confirm-dialog.png')).convert()
         self.confirm_action = None
+        
+        # agent images
+        self.agent_image = pygame.image.load(os.path.join('..', 'data', 'agent.png')).convert()
         
         # player objects
         self.ufo_sprite = None
@@ -404,6 +408,10 @@ class View(object):
             
             # radar
             self.draw_tactical_radar()
+            
+            # help words
+            self.draw_ufo_help()
+                
         
         # draw sprites
         garbage_sprites = []
@@ -416,9 +424,16 @@ class View(object):
                     self.fire_jet_missile(sprite)
             elif isinstance(sprite, MissileSprite):
                 if self.ufo_sprite.rect.colliderect(sprite.rect):
+                    # TODO hit sound and explosion
                     garbage_sprites.append(sprite)
                     self.ufo_sprite.health -= random.randint(1, 3)
-                    # TODO hit sound
+                    if self.ufo_sprite.health < 1:
+                        if self.model.ufotactical.distance_from_goal > 0:
+                            # fail
+                            pass
+                        else:
+                            # succeed
+                            pass
         
         # garbage
         for g in garbage_sprites:
@@ -445,34 +460,37 @@ class View(object):
 
     def draw_tactical_radar(self):
         
-        if not self.ufo_sprite.autopilot:
-
-            # base image
-            self.canvas.blit(
-                self.ufo_sprite_sheet.subsurface(RADAR_RECT),
-                (10, 10))
-            
-            # enemy fighters
-            incoming_jets = self.model.ufotactical.jet_distances
-            for enemy in incoming_jets:
-                # draw a dot for it's distance.
-                epos = (
-                    50,
-                    50 + ((enemy / 500.0) * 40)
-                    )
-                self.canvas.blit(
-                    self.ufo_sprite_sheet.subsurface(RADAR_HOSTILE_RECT),
-                    epos)
-
-            # dot for goal distance
+        # base image
+        self.canvas.blit(
+            self.ufo_sprite_sheet.subsurface(RADAR_RECT),
+            (10, 10))
+        
+        # enemy fighters
+        incoming_jets = self.model.ufotactical.jet_distances
+        for enemy in incoming_jets:
+            # draw a dot for it's distance.
             epos = (
-                50 + (RADAR_GOAL_RECT[3] / 2), 
-                50 - ((self.model.ufotactical.distance_from_goal / 2000.0) * 40)
+                50,
+                50 + ((enemy / 500.0) * 40)
                 )
             self.canvas.blit(
-                self.ufo_sprite_sheet.subsurface(RADAR_GOAL_RECT),
+                self.ufo_sprite_sheet.subsurface(RADAR_HOSTILE_RECT),
                 epos)
 
+        # dot for goal distance
+        epos = (
+            50 + (RADAR_GOAL_RECT[3] / 2), 
+            50 - ((self.model.ufotactical.distance_from_goal / 2000.0) * 40)
+            )
+        self.canvas.blit(
+            self.ufo_sprite_sheet.subsurface(RADAR_GOAL_RECT),
+            epos)
+
+    def draw_ufo_help(self):
+        if self.model.ufotactical.clock  < 250:
+            self.canvas.blit(self.agent_image, (10, 10))
+            self.canvas.blit(self.tactical_info_sprite, (220, 40))
+    
     def print_wrapped_text(self, sentence, maxlength):
         """
         Creates an image with the given words wrapped.
@@ -517,6 +535,12 @@ class View(object):
         sprite.image = image
         sprite.rect = pygame.Rect((0, 0), (image.get_width(), BRIEF_TEXT_HEIGHT))
         self.brief_sprite = sprite
+        
+        self.tactical_info_sprite = self.print_wrapped_text(
+            'Avoid gunfire until you reach the target zone. ' \
+            'Once in the zone, you must get shot down on purpose. ' \
+            'Timing is critical, good luck Agent!'
+            , 30)
 
     def scroll_brief(self, offset):
         self.brief_offset += offset

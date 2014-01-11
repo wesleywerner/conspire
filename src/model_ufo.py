@@ -10,6 +10,7 @@ class UFOTactical(object):
         self.clock = 0
 
     def reset_goal(self):
+        self.clock = 0
         self.distance_from_goal = 750
         self.fighter_jets = []
     
