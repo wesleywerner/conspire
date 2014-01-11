@@ -118,7 +118,7 @@ class UFOSprite(pygame.sprite.Sprite):
                 self._accelerate(0, 1)
                 lose_acceleration = False
                 
-            if pressed[K_SPACE]:
+            if pressed[K_F10]:
                 self.health = 0
             
             self._clamp()
@@ -128,13 +128,13 @@ class UFOSprite(pygame.sprite.Sprite):
         
         if lose_acceleration:
             if self.speed[0] > 0:
-                self.speed[0] -= 1
+                self.speed[0] -= 2
             elif self.speed[0] < 0:
-                self.speed[0] += 1
+                self.speed[0] += 2
             if self.speed[1] > 0:
-                self.speed[1] -= 1
+                self.speed[1] -= 2
             elif self.speed[1] < 0:
-                self.speed[1] += 1
+                self.speed[1] += 2
         
         self.angle = (self.angle + 10) % 360
         self.image = pygame.transform.rotate(self.original_image, self.angle)
