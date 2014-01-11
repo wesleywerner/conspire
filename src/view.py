@@ -96,6 +96,10 @@ class View(object):
         self.load_sprites()
         self.font = pygame.font.Font(os.path.join('..', 'data', 'emulogic.ttf'), 12)
         
+        # confirm dialog
+        self.confirm_image = pygame.image.load(os.path.join('..', 'data', 'confirm-dialog.png')).convert()
+        self.confirm_action = None
+        
     def load_background(self):
         """
         Load a background depending on the game state.
@@ -135,15 +139,16 @@ class View(object):
         
         """
         
-        xy = self.translated_mousepos
-        for sprite in self.sprites:
-            if sprite.rect.collidepoint(xy):
-                part_name = self.font.render(
-                    sprite.name, False, BORDER, TRANSPARENT)
-                part_name.set_colorkey(TRANSPARENT)
-                if part_name:
-                    self.canvas.blit(part_name, (13, 370))
-                    return
+        if not self.confirm_action:
+            xy = self.translated_mousepos
+            for sprite in self.sprites:
+                if sprite.rect.collidepoint(xy):
+                    part_name = self.font.render(
+                        sprite.name, False, BORDER, TRANSPARENT)
+                    part_name.set_colorkey(TRANSPARENT)
+                    if part_name:
+                        self.canvas.blit(part_name, (13, 370))
+                        return
 
     def draw_body_accuracy(self):
         """
@@ -185,6 +190,13 @@ class View(object):
         for sprite in self.sprites:
             self.canvas.blit(sprite.image, sprite.rect)
         
+        # confirm
+        if self.confirm_action:
+            csize = self.canvas.get_size()
+            size = pygame.Rect((0, 0), self.confirm_image.get_size())
+            size.center = (csize[0] / 2, csize[1] / 2)
+            self.canvas.blit(self.confirm_image, size)
+            
         # rescale
         if self.scale_ratio > 1.0:
             self.screen.blit(
@@ -274,15 +286,29 @@ class View(object):
             xy[1] / self.scale_ratio - scaled_yoffset)
         return xy
     
-#    def screenpos(self, xy
-
     def mouseDown(self):
         self.dragging_sprite = None
+        xy = self.translated_mousepos
+
+        # affirmative and negatory buttons
+        if self.confirm_action:
+
+            affirm = pygame.Rect(204, 287, 191, 25)
+            if affirm.collidepoint(xy):
+                
+                if self.confirm_action == 'plant':
+                    self.model.set_state(STATE_GUNFIGHT)
+                
+                self.confirm_action = None
+                
+            negate = pygame.Rect(204, 337, 191, 25)
+            if negate.collidepoint(xy):
+                self.confirm_action = None
+                
+            return
+
         if self.model.state == STATE_BUILD:
-            
-            #xy = pygame.mouse.get_pos()
-            xy = self.translated_mousepos
-            
+
             # sprite click
             for sprite in self.sprites:
                 if sprite.rect.collidepoint(xy):
@@ -291,9 +317,9 @@ class View(object):
 
             # plant button click
             button = pygame.Rect(390, 165, 198, 29)
-            if button.collidepoint(self.translated_mousepos):
-                self.model.set_state(STATE_GUNFIGHT)
-
+            if button.collidepoint(xy):
+                self.confirm_action = 'plant'
+            
     def mouseUp(self):
         if self.dragging_sprite:
             part = self.dragging_sprite.name
