@@ -40,7 +40,7 @@ if __name__ == "__main__":
     # switch to this path to point relative paths to resources
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
     model = Model()
-    view = View(600, 600, model)
+    view = View(1024, 768, model)
     controller = Controller(model, view)
     
     # move along debugging
