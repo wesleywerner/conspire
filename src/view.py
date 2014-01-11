@@ -407,7 +407,6 @@ class View(object):
         
         if self.exit_counter > 0:
             self.exit_counter -= 1
-            print(self.exit_counter)
         
         if self.model.state == STATE_BUILD:
         
