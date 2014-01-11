@@ -37,6 +37,11 @@ LEVEL_SCENARIOS = (
     "\n" \
     "And the best way to predict the future, is to invent it. " \
     "So you could say our business is the future.",
+    
+    "scenario #2",
+    "scenario #3",
+    "scenario #4",
+    "scenario #5",
 )
 
 class Builder(object):
