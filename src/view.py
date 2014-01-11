@@ -63,6 +63,7 @@ class UFOSprite(pygame.sprite.Sprite):
         self.fly_region = 0
         self.speed = [0, 0]
         self.autopilot = True
+        self.health = 10
         
     def _accelerate(self, x, y):
         self.speed = [self.speed[0] + x, self.speed[1] + y]
@@ -146,7 +147,7 @@ class FighterJetSprite(pygame.sprite.Sprite):
         self.target = target
         self.reload_time = 0
         self.movement = 0
-        self.fly_region = CANVAS_SIZE[1] / 2
+        self.fly_region = CANVAS_SIZE[1] / 1.5
         self.movement_speed = random.randint(10.0, 30.0)
         self.autopilot = True
         self._firing = False
@@ -405,6 +406,7 @@ class View(object):
             self.draw_tactical_radar()
         
         # draw sprites
+        garbage_sprites = []
         for sprite in self.sprites:
             sprite.update()
             self.canvas.blit(sprite.image, sprite.rect)
@@ -412,6 +414,15 @@ class View(object):
             if isinstance(sprite, FighterJetSprite):
                 if sprite.is_firing:
                     self.fire_jet_missile(sprite)
+            elif isinstance(sprite, MissileSprite):
+                if self.ufo_sprite.rect.colliderect(sprite.rect):
+                    garbage_sprites.append(sprite)
+                    self.ufo_sprite.health -= random.randint(1, 3)
+                    # TODO hit sound
+        
+        # garbage
+        for g in garbage_sprites:
+            self.sprites.remove(g)
         
         # confirm
         if self.confirm_action:
