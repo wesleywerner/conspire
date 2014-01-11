@@ -26,6 +26,13 @@ PARTS_RECT = {
     'human left arm': (32, 28, 9, 41),
     'human right leg': (11, 70, 10, 35),
     'human left leg': (25, 70, 10, 35),
+
+    'alien torso': (65, 22, 20, 52),
+    'alien head': (67, 4, 16, 19),
+    'alien right arm': (57, 28, 9, 41),
+    'alien left arm': (84, 28, 9, 41),
+    'alien right leg': (63, 70, 10, 35),
+    'alien left leg': (77, 70, 10, 35),
 }
 
 class DraggableSprite(pygame.sprite.Sprite):
@@ -107,6 +114,7 @@ class View(object):
         if self.model.state == STATE_BUILD:
         
             parts = self.model.builder.get_level_parts()
+            print('level %s parts are %s' % (self.model.level, parts))
             for part in parts:
                 rect = pygame.Rect(PARTS_RECT.get(part, None))
                 if rect:
@@ -114,6 +122,8 @@ class View(object):
                     rect.center = (random.randint(30, 570), random.randint(230, 370))
                     sprite = DraggableSprite(part, image, rect)
                     self.sprites.append(sprite)
+                else:
+                    print('warning: part "%s" has no image rect definition' % (part,))
 
     def draw_hover_part_name(self):
         """
@@ -237,9 +247,9 @@ class View(object):
     
     def model_event(self, event_name, data):
         
-        print('view received event %s=>%s' % (event_name, data))
+        print('view received event %s => %s' % (event_name, data))
         
-        if event_name == 'levelup':
+        if event_name == 'levelup' or event_name == 'state':
             self.load_background()
             self.load_sprites()
             self.draw_briefing_words()
