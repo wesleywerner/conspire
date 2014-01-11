@@ -135,8 +135,9 @@ class View(object):
         
         """
         
+        xy = self.translated_mousepos
         for sprite in self.sprites:
-            if sprite.rect.collidepoint(pygame.mouse.get_pos()):
+            if sprite.rect.collidepoint(xy):
                 part_name = self.font.render(
                     sprite.name, False, BORDER, TRANSPARENT)
                 part_name.set_colorkey(TRANSPARENT)
@@ -271,7 +272,6 @@ class View(object):
         xy = (
             xy[0] / self.scale_ratio - scaled_xoffset, 
             xy[1] / self.scale_ratio - scaled_yoffset)
-        print(xy)
         return xy
     
 #    def screenpos(self, xy
@@ -285,8 +285,6 @@ class View(object):
             
             # sprite click
             for sprite in self.sprites:
-                if sprite.name == 'human head':
-                    print(sprite.rect, xy)
                 if sprite.rect.collidepoint(xy):
                     self.dragging_sprite = sprite
                     return
