@@ -228,7 +228,7 @@ class View(object):
         self.confirm_action = None
         
         # player objects
-        self.ufo = None
+        self.ufo_sprite = None
         
     def load_background(self):
         """
@@ -269,12 +269,10 @@ class View(object):
             
             # player ufo craft
             # start off at the bottom center of the screen
-            self.ufo = UFOSprite(self.ufo_sprite_sheet.subsurface(UFO_RECT))
-            self.ufo.fly_region = CANVAS_SIZE[1] / 2
-            self.ufo.rect.center = (CANVAS_SIZE[0] / 2, CANVAS_SIZE[1])
-            self.sprites.append(self.ufo)
-            self.add_fighter_jet()
-            self.add_fighter_jet()
+            self.ufo_sprite = UFOSprite(self.ufo_sprite_sheet.subsurface(UFO_RECT))
+            self.ufo_sprite.fly_region = CANVAS_SIZE[1] / 2
+            self.ufo_sprite.rect.center = (CANVAS_SIZE[0] / 2, CANVAS_SIZE[1])
+            self.sprites.append(self.ufo_sprite)
 
     def add_fighter_jet(self):
         # add some jets
@@ -341,7 +339,7 @@ class View(object):
         elif self.model.state == STATE_UFO:
             
             # radar
-            if not self.ufo.autopilot:
+            if not self.ufo_sprite.autopilot:
                 self.canvas.blit(
                     self.ufo_sprite_sheet.subsurface(RADAR_RECT),
                     (10, 10))
@@ -434,6 +432,9 @@ class View(object):
             self.load_background()
             self.load_sprites()
             self.draw_briefing_words()
+        
+        elif event_name == 'deploy fighter jet':
+            self.add_fighter_jet()
 
     @property
     def translated_mousepos(self):

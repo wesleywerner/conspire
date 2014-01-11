@@ -1,6 +1,7 @@
 import os
 import random
 from model_builder import Builder
+from model_ufo import UFOTactical
 
 STATE_MENU = 1
 STATE_BUILD = 2
@@ -20,6 +21,7 @@ class Model(object):
         self.score = 0
         self._level = 0
         self.builder = Builder(self)
+        self.ufotactical = UFOTactical(self)
         
         # listeners get notified of model events
         self.listeners = []
@@ -51,6 +53,8 @@ class Model(object):
         """
         
         self.state = new_state
+        if new_state == STATE_UFO:
+            self.ufotactical.reset_goal()
         self.notify('state', new_state)
         
     def turn(self):
@@ -58,4 +62,8 @@ class Model(object):
         Perform a game turn as determined by the FPS of the view.
         """
         
-        pass
+        if self.state == STATE_UFO:
+            self.ufotactical.update()
+            if self.ufotactical.new_jets:
+                self.ufotactical.deploy_jet()
+                self.notify('deploy fighter jet', None)
