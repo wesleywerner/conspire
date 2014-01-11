@@ -21,6 +21,10 @@ class Controller(object):
         
                 if event.key == K_ESCAPE:
                     self.running = False
+                elif event.key == K_SPACE:
+                    if self.model.state == STATE_RESULTS:
+                        model.level = model.level + 1
+                        self.model.set_state(STATE_BUILD)
                 else:
                     view.keyDown(event.key)
                     
@@ -45,7 +49,7 @@ if __name__ == "__main__":
     
     # move along debugging
     model.level = model.level + 1
-    model.set_state(STATE_UFO)
+    model.set_state(STATE_BUILD)
     
     while controller.running:
         controller.process_input()
