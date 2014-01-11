@@ -137,6 +137,11 @@ class UFOSprite(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(self.original_image, self.angle)
         self.rect = self.image.get_rect(center=self.rect.center)
 
+    def take_damage(self):
+        self.health -= random.randint(1, 3)
+        if self.health < 0:
+            self.health = 0
+
 class FighterJetSprite(pygame.sprite.Sprite):
     
     def __init__(self, image, target):
@@ -409,9 +414,12 @@ class View(object):
             # radar
             self.draw_tactical_radar()
             
+            # health bar
+            self.draw_ufo_healthbar()
+                
             # help words
             self.draw_ufo_help()
-                
+            
         
         # draw sprites
         garbage_sprites = []
@@ -426,7 +434,8 @@ class View(object):
                 if self.ufo_sprite.rect.colliderect(sprite.rect):
                     # TODO hit sound and explosion
                     garbage_sprites.append(sprite)
-                    self.ufo_sprite.health -= random.randint(1, 3)
+                    self.ufo_sprite.take_damage()
+
                     if self.ufo_sprite.health < 1:
                         if self.model.ufotactical.distance_from_goal > 0:
                             # fail
@@ -487,9 +496,17 @@ class View(object):
             epos)
 
     def draw_ufo_help(self):
-        if self.model.ufotactical.clock  < 250:
+        if self.model.ufotactical.clock  < 50: #250
             self.canvas.blit(self.agent_image, (10, 10))
             self.canvas.blit(self.tactical_info_sprite, (220, 40))
+            
+    def draw_ufo_healthbar(self):
+        hp = self.ufo_sprite.health * 8 + 1
+        fullrect = pygame.Rect(10, 100, 80, 10)
+        rect = pygame.Rect(10, 100, hp, 10)
+        pygame.draw.rect(self.canvas, RED, fullrect, 0)
+        pygame.draw.rect(self.canvas, GREEN, rect, 0)
+        pygame.draw.rect(self.canvas, BLACK, fullrect, 2)
     
     def print_wrapped_text(self, sentence, maxlength):
         """
