@@ -16,7 +16,7 @@ class UFOTactical(object):
     
     @property
     def max_jets(self):
-        return 1 + int(self.model.level / 2.0)
+        return 2 + int(self.model.level / 2.0)
     
     def deploy_jet(self):
         self.new_jets -= 1
