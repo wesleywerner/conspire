@@ -216,7 +216,7 @@ class View(object):
 
     def scroll_brief(self, offset):
         self.brief_offset += offset
-        max_size = self.brief_sprite.rect.height
+        max_size = self.brief_sprite.rect.height * 2
         if self.brief_offset > max_size:
             self.brief_offset = max_size
         if self.brief_offset < 0:
