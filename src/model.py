@@ -16,7 +16,7 @@ class Model(object):
         
         """
         
-        self.state = STATE_BUILD
+        self.state = STATE_MENU
         self.score = 0
         self._level = 0
         self.builder = Builder(self)
