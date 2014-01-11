@@ -45,7 +45,7 @@ if __name__ == "__main__":
     
     # move along debugging
     model.level = model.level + 1
-    model.set_state(STATE_BUILD)
+    model.set_state(STATE_UFO)
     
     while controller.running:
         controller.process_input()

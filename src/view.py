@@ -35,6 +35,11 @@ PARTS_RECT = {
     'alien left leg': (115,130,20,69),
 }
 
+UFO_RECT = (6,6,88,88)
+FIGHTER_RECT = (113,12,74,75)
+MISSILE_RECT = (180,12,4,28)
+
+
 class DraggableSprite(pygame.sprite.Sprite):
     
     def __init__(self, name, image, rect):
@@ -42,6 +47,90 @@ class DraggableSprite(pygame.sprite.Sprite):
         self.name = name
         self.image = image
         self.rect = rect
+
+
+class UFOSprite(pygame.sprite.Sprite):
+    
+    def __init__(self, image):
+        pygame.sprite.Sprite.__init__(self)
+        self.name = 'UFO'
+        self.image = image
+        self.rect = image.get_rect()
+        self.fly_region = 0
+        self.speed = 0
+        self.autopilot = True
+        
+    def _accelerate(self):
+        self.speed += 1
+        if self.speed > 10:
+            self.speed = 10
+
+    def _clamp(self):
+        if self.rect.left < 10:
+            self.rect.left = 10 
+        if self.rect.top < 10:
+            self.rect.top = 10 
+        if self.rect.right > CANVAS_SIZE[0] - 10:
+            self.rect.right = CANVAS_SIZE[0] - 10 
+        if self.rect.top > self.fly_region:
+            self.rect.top = self.fly_region
+
+    def update(self):
+        """
+        Player controller craft.
+        
+        """
+        
+        # auto move the UFO forward until we are in the top half of the screen
+        if self.rect.top > self.fly_region:
+            self.rect.top -= 6
+            if self.rect.top < self.fly_region:
+                self.autopilot = False
+        
+        pressed = pygame.key.get_pressed()
+        lose_acceleration = True
+        
+        if not self.autopilot:
+            if pressed[K_LEFT]:
+                self._accelerate()
+                self.rect.left -= self.speed
+                lose_acceleration = False
+
+            if pressed[K_RIGHT]:
+                self._accelerate()
+                self.rect.left += self.speed
+                lose_acceleration = False
+            
+            if pressed[K_UP]:
+                self._accelerate()
+                self.rect.top -= self.speed
+                lose_acceleration = False
+            
+            if pressed[K_DOWN]:
+                self._accelerate()
+                self.rect.top += self.speed
+                lose_acceleration = False
+            
+            self._clamp()
+        
+        if lose_acceleration:
+            self.speed = 0
+
+
+class FighterJetSprite(pygame.sprite.Sprite):
+    
+    def __init__(self, name, image, rect, target):
+        pygame.sprite.Sprite.__init__(self)
+        self.name = name
+        self.image = image
+        self.rect = rect
+        self.target = target
+        
+    def update(self):
+        
+        # move inline with target and fire when ready and able.
+        pass
+
 
 class View(object):
     
@@ -92,6 +181,8 @@ class View(object):
         self.dragging_sprite = None
         self.parts_sprite_sheet = pygame.image.load(os.path.join('..', 'data', 'parts.png')).convert()
         self.parts_sprite_sheet.set_colorkey(TRANSPARENT)
+        self.ufo_sprite_sheet = pygame.image.load(os.path.join('..', 'data', 'ufo-sprites.png')).convert()
+        self.ufo_sprite_sheet.set_colorkey(TRANSPARENT)
         self.sprites = []
         self.load_sprites()
         self.font = pygame.font.Font(os.path.join('..', 'data', 'emulogic.ttf'), 12)
@@ -108,6 +199,8 @@ class View(object):
         
         if self.model.state == STATE_BUILD:
             self.background = pygame.image.load(os.path.join('..', 'data', 'build-screen.png')).convert()
+        if self.model.state == STATE_UFO:
+            self.background = pygame.image.load(os.path.join('..', 'data', 'ufo-screen.png')).convert()
 
     def load_sprites(self):
         """
@@ -132,6 +225,15 @@ class View(object):
                     self.sprites.append(sprite)
                 else:
                     print('warning: part "%s" has no image rect definition' % (part,))
+        
+        if self.model.state == STATE_UFO:
+            
+            # player ufo craft
+            ufo = UFOSprite(self.ufo_sprite_sheet.subsurface(UFO_RECT))
+            # start off at the bottom center of the screen
+            ufo.fly_region = CANVAS_SIZE[1] / 2
+            ufo.rect.center = (CANVAS_SIZE[0] / 2, CANVAS_SIZE[1])
+            self.sprites.append(ufo)
 
     def draw_hover_part_name(self):
         """
@@ -188,6 +290,7 @@ class View(object):
         
         # draw sprites
         for sprite in self.sprites:
+            sprite.update()
             self.canvas.blit(sprite.image, sprite.rect)
         
         # confirm
