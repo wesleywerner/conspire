@@ -20,19 +20,19 @@ PURPLE = (220, 0, 220)
 
 # parts definition for source image rect
 PARTS_RECT = {
-    'human torso': (14, 23, 18, 51),
-    'human head': (15, 4, 16, 19),
-    'human right arm': (5, 28, 9, 41),
-    'human left arm': (32, 28, 9, 41),
-    'human right leg': (11, 70, 10, 35),
-    'human left leg': (25, 70, 10, 35),
+    'human torso': (16,35,39,104),
+    'human head': (20,0,32,37),
+    'human right arm': (0,47,18,81),
+    'human left arm': (53,47,18,81),
+    'human right leg': (12,130,20,69),
+    'human left leg': (39,130,20,69),
 
-    'alien torso': (65, 22, 20, 52),
-    'alien head': (67, 4, 16, 19),
-    'alien right arm': (57, 28, 9, 41),
-    'alien left arm': (84, 28, 9, 41),
-    'alien right leg': (63, 70, 10, 35),
-    'alien left leg': (77, 70, 10, 35),
+    'alien torso': (92,35,39,102),
+    'alien head': (96,0,32,37),
+    'alien right arm': (76,47,18,81),
+    'alien left arm': (129,47,18,81),
+    'alien right leg': (88,130,20,69),
+    'alien left leg': (115,130,20,69),
 }
 
 class DraggableSprite(pygame.sprite.Sprite):
