@@ -297,7 +297,7 @@ class View(object):
             if affirm.collidepoint(xy):
                 
                 if self.confirm_action == 'plant':
-                    self.model.set_state(STATE_GUNFIGHT)
+                    self.model.set_state(STATE_UFO)
                 
                 self.confirm_action = None
                 

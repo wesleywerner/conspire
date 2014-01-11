@@ -4,7 +4,7 @@ from model_builder import Builder
 
 STATE_MENU = 1
 STATE_BUILD = 2
-STATE_GUNFIGHT = 3
+STATE_UFO = 3
 STATE_BURY = 4
 STATE_RESULTS = 5
 
