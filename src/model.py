@@ -101,7 +101,6 @@ class Model(object):
             weirdness += 3
         
         # bodies have arms & legs swapped around
-        if item_type
         
         opinion = 'Nothing suspicious about the %(item)s was discovered. '
         if weirdness > 0:
@@ -113,7 +112,7 @@ class Model(object):
                     'decades to come.'
             elif weirdness <= 6:
                 opinion = 'The %(item)s in question seems to be authentic, ' \
-                    'yes minor details leave experts dumbfounded and ' \
+                    'yet minor details leave experts dumbfounded and ' \
                     'questioning the legitimacy of it. ' \
                     'It will remain another unanswered mystery unless ' \
                     'more evidence comes to light.'
