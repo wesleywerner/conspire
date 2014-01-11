@@ -60,13 +60,19 @@ class UFOSprite(pygame.sprite.Sprite):
         self.image = image
         self.rect = image.get_rect()
         self.fly_region = 0
-        self.speed = 0
+        self.speed = [0, 0]
         self.autopilot = True
         
-    def _accelerate(self):
-        self.speed += 1
-        if self.speed > 10:
-            self.speed = 10
+    def _accelerate(self, x, y):
+        self.speed = [self.speed[0] + x, self.speed[1] + y]
+        if self.speed[0] < -10:
+            self.speed[0] = -10
+        if self.speed[1] < -10:
+            self.speed[1] = -10
+        if self.speed[0] > 10:
+            self.speed[0] = 10
+        if self.speed[1] > 10:
+            self.speed[1] = 10
 
     def _clamp(self):
         if self.rect.left < 10:
@@ -94,30 +100,36 @@ class UFOSprite(pygame.sprite.Sprite):
         lose_acceleration = True
         
         if not self.autopilot:
-            if pressed[K_LEFT]:
-                self._accelerate()
-                self.rect.left -= self.speed
+            if pressed[K_LEFT] or pressed[K_a]:
+                self._accelerate(-1, 0)
                 lose_acceleration = False
 
-            if pressed[K_RIGHT]:
-                self._accelerate()
-                self.rect.left += self.speed
+            if pressed[K_RIGHT] or pressed[K_d]:
+                self._accelerate(1, 0)
                 lose_acceleration = False
             
-            if pressed[K_UP]:
-                self._accelerate()
-                self.rect.top -= self.speed
+            if pressed[K_UP] or pressed[K_w]:
+                self._accelerate(0, -1)
                 lose_acceleration = False
             
-            if pressed[K_DOWN]:
-                self._accelerate()
-                self.rect.top += self.speed
+            if pressed[K_DOWN] or pressed[K_s]:
+                self._accelerate(0, 1)
                 lose_acceleration = False
             
             self._clamp()
+
+        self.rect.left += self.speed[0]
+        self.rect.top += self.speed[1]
         
         if lose_acceleration:
-            self.speed = 0
+            if self.speed[0] > 0:
+                self.speed[0] -= 1
+            elif self.speed[0] < 0:
+                self.speed[0] += 1
+            if self.speed[1] > 0:
+                self.speed[1] -= 1
+            elif self.speed[1] < 0:
+                self.speed[1] += 1
 
 
 class FighterJetSprite(pygame.sprite.Sprite):
