@@ -160,9 +160,7 @@ class Model(object):
             ''
         
         self.results = (self.results % replacers)
-        
-        print(self.results)
-        
+
     def turn(self):
         """
         Perform a game turn as determined by the FPS of the view.
