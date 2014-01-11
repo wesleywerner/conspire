@@ -26,7 +26,7 @@ class UFOTactical(object):
         if self.distance_from_goal < 0:
             self.distance_from_goal = 0
         
-        if self.clock > 260:
+        if self.clock > 26:
 
             if len(self.fighter_jets) < self.max_jets:
                 if random.randint(1, 100) < 10:

@@ -149,6 +149,7 @@ class FighterJetSprite(pygame.sprite.Sprite):
         self.fly_region = CANVAS_SIZE[1] / 2
         self.movement_speed = random.randint(10.0, 30.0)
         self.autopilot = True
+        self._firing = False
     
     def _clamp(self):
         if self.rect.left < 10:
@@ -176,8 +177,9 @@ class FighterJetSprite(pygame.sprite.Sprite):
             else:
                 if self.reload_time > 0:
                     self.reload_time -= 1
-                else:
+                if self.reload_time < 20:
                     print('Fire!')
+                    self._firing = True
                     self.reload_time = 30
             
             if random.randint(1, 100) < 5:
@@ -188,6 +190,29 @@ class FighterJetSprite(pygame.sprite.Sprite):
                 self.movement = 0
             self.rect.top += self.movement * 4
             self._clamp()
+
+    @property
+    def is_firing(self):
+        if self._firing:
+            self._firing = False
+            return True
+        else:
+            return False
+
+
+class MissileSprite(pygame.sprite.Sprite):
+    
+    def __init__(self, image):
+        pygame.sprite.Sprite.__init__(self)
+        self.name = 'Missile'
+        self.image = image
+        self.rect = image.get_rect()
+        self.destroy = False
+    
+    def update(self):
+        self.rect.top -= 10
+        if self.rect.bottom < 0:
+            self.destroy = True
 
 
 class View(object):
@@ -297,7 +322,11 @@ class View(object):
             self.sprites.append(self.ufo_sprite)
 
     def add_fighter_jet(self):
-        # add some jets
+        """
+        Add a fighter jet to the play field.
+        
+        """
+        
         jet = FighterJetSprite(
             self.ufo_sprite_sheet.subsurface(FIGHTER_RECT),
             self.sprites[0])
@@ -305,6 +334,18 @@ class View(object):
         jet.rect.left = random.randint(100, 400)
         self.sprites.append(jet)
 
+    def fire_jet_missile(self, jet):
+        """
+        Fire a missile from a jet.
+
+        """
+        
+        missile = MissileSprite(
+            self.ufo_sprite_sheet.subsurface(MISSILE_RECT))
+        missile.rect.center = jet.rect.center
+        missile.rect.left += (26 * random.randint(-1, 1))
+        self.sprites.append(missile)
+        
     def draw_hover_part_name(self):
         """
         Return the part name under the cursor.
@@ -367,6 +408,10 @@ class View(object):
         for sprite in self.sprites:
             sprite.update()
             self.canvas.blit(sprite.image, sprite.rect)
+            
+            if isinstance(sprite, FighterJetSprite):
+                if sprite.is_firing:
+                    self.fire_jet_missile(sprite)
         
         # confirm
         if self.confirm_action:
