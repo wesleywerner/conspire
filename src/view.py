@@ -51,12 +51,13 @@ class DraggableSprite(pygame.sprite.Sprite):
         self.image = image
         self.rect = rect
 
-
 class UFOSprite(pygame.sprite.Sprite):
     
     def __init__(self, image):
         pygame.sprite.Sprite.__init__(self)
         self.name = 'UFO'
+        self.original_image = image
+        self.angle = 0
         self.image = image
         self.rect = image.get_rect()
         self.fly_region = 0
@@ -130,7 +131,10 @@ class UFOSprite(pygame.sprite.Sprite):
                 self.speed[1] -= 1
             elif self.speed[1] < 0:
                 self.speed[1] += 1
-
+        
+        self.angle = (self.angle + 10) % 360
+        self.image = pygame.transform.rotate(self.original_image, self.angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
 
 class FighterJetSprite(pygame.sprite.Sprite):
     
