@@ -117,6 +117,9 @@ class UFOSprite(pygame.sprite.Sprite):
             if pressed[K_DOWN] or pressed[K_s]:
                 self._accelerate(0, 1)
                 lose_acceleration = False
+                
+            if pressed[K_SPACE]:
+                self.health = 0
             
             self._clamp()
 
@@ -283,6 +286,7 @@ class View(object):
         self.sprites = []
         self.load_sprites()
         self.font = pygame.font.Font(os.path.join('..', 'data', 'emulogic.ttf'), 12)
+        self.smallfont = pygame.font.Font(os.path.join('..', 'data', 'emulogic.ttf'), 10)
         
         # confirm dialog
         self.confirm_image = pygame.image.load(os.path.join('..', 'data', 'confirm-dialog.png')).convert()
@@ -439,6 +443,11 @@ class View(object):
             # exit
             if self.exit_counter == 0:
                 self.model.set_state(STATE_RESULTS)
+                
+        elif self.model.state == STATE_RESULTS:
+            
+            # report!
+            self.canvas.blit(self.brief_sprite, (111, 100))
         
         # draw sprites
         garbage_sprites = []
@@ -511,9 +520,15 @@ class View(object):
             epos)
 
     def draw_ufo_help(self):
-        if self.model.ufotactical.clock  < 50: #250
-            self.canvas.blit(self.agent_image, (10, 10))
-            self.canvas.blit(self.tactical_info_sprite, (220, 40))
+        
+        if self.model.state == STATE_UFO:
+            # for the first few ticks
+            if self.model.ufotactical.clock  < 50: #250
+                # draw the agent picture
+                self.canvas.blit(self.agent_image, (10, 10))
+                # and show some helpful words of wisdom
+                if self.tactical_info_sprite:
+                    self.canvas.blit(self.tactical_info_sprite, (220, 40))
             
     def draw_ufo_healthbar(self):
         hp = self.ufo_sprite.health * 8 + 1
@@ -523,7 +538,7 @@ class View(object):
         pygame.draw.rect(self.canvas, GREEN, rect, 0)
         pygame.draw.rect(self.canvas, BLACK, fullrect, 2)
     
-    def print_wrapped_text(self, sentence, maxlength):
+    def print_wrapped_text(self, sentence, maxlength, font, color):
         """
         Creates an image with the given words wrapped.
         
@@ -538,7 +553,7 @@ class View(object):
         max_width = 0
         total_height = 0
         for line in lines:
-            surfii.append(self.font.render(line, False, TEXT, TRANSPARENT))
+            surfii.append(font.render(line, False, color, TRANSPARENT))
             print_size = surfii[-1].get_size()
             if print_size[0] > max_width:
                 max_width = print_size[0]
@@ -560,27 +575,41 @@ class View(object):
         
         """
         
-        BRIEF_TEXT_HEIGHT = 150
-        sprite = pygame.sprite.Sprite()
-        image = self.print_wrapped_text(
-            model_builder.LEVEL_SCENARIOS[self.model.level - 1], 30)
-        sprite.image = image
-        sprite.rect = pygame.Rect((0, 0), (image.get_width(), BRIEF_TEXT_HEIGHT))
-        self.brief_sprite = sprite
+        if self.model.state == STATE_BUILD:
+            BRIEF_TEXT_HEIGHT = 150
+            sprite = pygame.sprite.Sprite()
+            image = self.print_wrapped_text(
+                model_builder.LEVEL_SCENARIOS[self.model.level - 1], 
+                30,
+                self.font,
+                TEXT
+                )
+            sprite.image = image
+            sprite.rect = pygame.Rect((0, 0), (image.get_width(), BRIEF_TEXT_HEIGHT))
+            self.brief_sprite = sprite
+            
+            self.tactical_info_sprite = self.print_wrapped_text(
+                'Avoid gunfire until you reach the target zone. ' \
+                'Once in the zone, you must get shot down on purpose. ' \
+                'Timing is critical, good luck Agent!',
+                30,
+                self.font,
+                TEXT
+                )
         
-        self.tactical_info_sprite = self.print_wrapped_text(
-            'Avoid gunfire until you reach the target zone. ' \
-            'Once in the zone, you must get shot down on purpose. ' \
-            'Timing is critical, good luck Agent!'
-            , 30)
+        elif self.model.state == STATE_RESULTS:
+            
+            self.brief_sprite = self.print_wrapped_text(
+                self.model.results, 35, self.smallfont, BLACK)
 
     def scroll_brief(self, offset):
-        self.brief_offset += offset
-        max_size = self.brief_sprite.rect.height * 2
-        if self.brief_offset > max_size:
-            self.brief_offset = max_size
-        if self.brief_offset < 0:
-            self.brief_offset = 0
+        if self.model.state == STATE_BUILD:
+            self.brief_offset += offset
+            max_size = self.brief_sprite.rect.height * 2
+            if self.brief_offset > max_size:
+                self.brief_offset = max_size
+            if self.brief_offset < 0:
+                self.brief_offset = 0
     
     def model_event(self, event_name, data):
         

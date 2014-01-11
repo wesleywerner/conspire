@@ -1,3 +1,5 @@
+from model import *
+
 # parts available for use per level number.
 LEVEL_PARTS = {
     1: ('human torso', 'human head', 
@@ -12,7 +14,7 @@ LEVEL_PARTS = {
 
 # parts a level may start off with as in use
 DEFAULT_PARTS = {
-    1: ('human head',),
+    1: (),
 }
 
 # parts required to complete a level
@@ -42,6 +44,19 @@ LEVEL_SCENARIOS = (
     "scenario #3",
     "scenario #4",
     "scenario #5",
+)
+
+# determine the type of the item to build, maps to levels.
+ITEM_TYPES = (
+    'body',
+    'body',
+    'body',
+)
+
+# determine the method of evidence deployment
+TACTICAL_TYPE = (
+    1,
+    1,
 )
 
 class Builder(object):

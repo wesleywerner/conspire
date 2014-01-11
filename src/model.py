@@ -1,6 +1,6 @@
 import os
 import random
-from model_builder import Builder
+from model_builder import *
 from model_ufo import UFOTactical
 
 STATE_MENU = 1
@@ -22,6 +22,8 @@ class Model(object):
         self._level = 0
         self.builder = Builder(self)
         self.ufotactical = UFOTactical(self)
+        self.mission_success = False
+        self.results = ''
         
         # listeners get notified of model events
         self.listeners = []
@@ -55,21 +57,113 @@ class Model(object):
         self.state = new_state
         if new_state == STATE_UFO:
             self.ufotactical.reset_goal()
+            self.analyze_results()
         if new_state == STATE_RESULTS:
             self.analyze_results()
         self.notify('state', new_state)
     
     def analyze_results(self):
-        # analyze the body accuracy and for weirdness
+        """
+        Build the results from all played values.
+        
+        """
+        
+        # set item types
+        item_type = ITEM_TYPES[self.level]
+        mission_type = TACTICAL_TYPE[self.level]
+        
+        replacers = {
+            'item': item_type,
+            'accuracy': self.builder.accuracy,
+        }
         
         # analyze tactical outcome
-        if self.ufotactical.distance_from_goal > 0:
-            # fail
-            pass
+        if self.mission_success:
+            replacers['outcome'] = 'SUCCESS'
         else:
-            # succeed
-            pass
+            replacers['outcome'] = 'FAILURE'
     
+        # intro
+        intro = random.choice((
+            'Today, Scientists have discovered one %(item)s ' \
+            'during a recent excavation near a historic ruin.',
+            ))
+        
+        replacers['intro'] = (intro % replacers)
+        
+        # weirdness determines public opinion.
+        # accuracy of the item built sets the base for believability.
+        # other minor incidents will affect it thereafter.
+        weirdness = 10 - int(self.builder.accuracy / 10.0)
+        
+        # mission failure increase weirdness
+        if not self.mission_success:
+            weirdness += 3
+        
+        # bodies have arms & legs swapped around
+        if item_type
+        
+        opinion = 'Nothing suspicious about the %(item)s was discovered. '
+        if weirdness > 0:
+            if weirdness <= 3:
+                opinion = 'Conspiracist websites are venting about ' \
+                    'the authenticity of the %(item)s. Authorities ' \
+                    'can neither substantiate nor deny these claims, ' \
+                    'and the %(item)s will be wondered about for many ' \
+                    'decades to come.'
+            elif weirdness <= 6:
+                opinion = 'The %(item)s in question seems to be authentic, ' \
+                    'yes minor details leave experts dumbfounded and ' \
+                    'questioning the legitimacy of it. ' \
+                    'It will remain another unanswered mystery unless ' \
+                    'more evidence comes to light.'
+            elif weirdness <= 9:
+                opinion = 'The %(item)s seems to bea faux, enough ' \
+                    'inconsistencies exist to make the scientific ' \
+                    'community unbelievers, but the loyal ' \
+                    'cult followers and conspiracists refuse to deny ' \
+                    'this discovery as a sign of the truth.'
+            else:
+                opinion = 'Experts found multiple flaws in the ' \
+                    '%(item)s, it is known to be falsified. Authorities ' \
+                    'have opened investigations, your reputation is tarnished. ' \
+                    'Hordes of conspiracists fall to the streets in uproar ' \
+                    'for something they now know is a lie!'
+        
+        opinion = opinion % replacers
+        replacers['opinion'] = opinion
+        
+        chance = ''
+        if self.builder.accuracy >= 100:
+            chance = 'very high'
+        elif self.builder.accuracy >= 70:
+            chance = 'high'
+        elif self.builder.accuracy >= 50:
+            chance = 'medium'
+        elif self.builder.accuracy >= 30:
+            chance = 'low'
+        elif self.builder.accuracy >= 0:
+            chance = 'terrible'
+        replacers['chance'] = chance
+        
+        self.results = 'Briefing and preperation' \
+            '\n' \
+            'One %(item)s was constructed, it\'s authenticity was determined ' \
+            'to be %(accuracy)s percent, giving us a believability ' \
+            'rating of "%(chance)s".' \
+            '\n' \
+            'Mission Result: %(outcome)s' \
+            '\n' \
+            'MEDIA STATEMENT EXTRACT' \
+            '\n' \
+            '%(intro)s %(opinion)s' \
+            '\n' \
+            ''
+        
+        self.results = (self.results % replacers)
+        
+        print(self.results)
+        
     def turn(self):
         """
         Perform a game turn as determined by the FPS of the view.
