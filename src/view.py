@@ -115,7 +115,7 @@ class View(object):
                     sprite = DraggableSprite(part, image, rect)
                     self.sprites.append(sprite)
 
-    def hover_part_name(self):
+    def draw_hover_part_name(self):
         """
         Return the part name under the cursor.
         
@@ -126,7 +126,21 @@ class View(object):
                 part_name = self.font.render(
                     sprite.name, False, BORDER, TRANSPARENT)
                 part_name.set_colorkey(TRANSPARENT)
-                return part_name
+                if part_name:
+                    self.canvas.blit(part_name, (13, 370))
+
+    def draw_body_accuracy(self):
+        """
+        Return the part name under the cursor.
+        
+        """
+        
+        part_name = self.font.render(
+            'accuracy: %s %%' % (self.model.builder.accuracy, ),
+            False, BORDER, TRANSPARENT)
+        part_name.set_colorkey(TRANSPARENT)
+        if part_name:
+            self.canvas.blit(part_name, (13, 420))
 
     def blit(self):
         """
@@ -148,10 +162,8 @@ class View(object):
                     (14, 22), 
                     self.brief_sprite.rect.move(0, self.brief_offset))
             
-            # hover part name
-            part_name = self.hover_part_name()
-            if part_name:
-                self.canvas.blit(part_name, (13, 370))
+            self.draw_hover_part_name()
+            self.draw_body_accuracy()
         
         # draw sprites
         for sprite in self.sprites:
@@ -240,7 +252,14 @@ class View(object):
                     return
     
     def mouseUp(self):
-        self.dragging_sprite = None
+        if self.dragging_sprite:
+            part = self.dragging_sprite.name
+            self.dragging_sprite = None
+            x, y = pygame.mouse.get_pos()
+            if y < 400:
+                self.model.builder.remove_part(part)
+            else:
+                self.model.builder.add_part(part)
 
     def mouseWheelUp(self):
         self.scroll_brief(-16)
