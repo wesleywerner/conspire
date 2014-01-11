@@ -71,12 +71,14 @@ class View(object):
         # since canvas is square the width+height always equal
         # but we calculate anyway to be good citizens.
         self.scale_ratio = self.screen_size[1] / float(CANVAS_SIZE[1])
+        print('scale ratio is %s' % (self.scale_ratio,))
         
         self.scale_size = (
             int(CANVAS_SIZE[0] * self.scale_ratio), self.screen_size[1])
             
         self.scale_center = ((self.screen_size[0] - self.scale_size[0]) / 2,
             (self.screen_size[1] - self.scale_size[1]) / 2)
+        print('scale center is %s' % (self.scale_center,))
         
         # background image storage
         self.background = self.canvas.copy()
@@ -167,7 +169,7 @@ class View(object):
         
             # dragging a sprite
             if self.dragging_sprite:
-                self.dragging_sprite.rect.center = pygame.mouse.get_pos()
+                self.dragging_sprite.rect.center =  self.translated_mousepos
             
             # briefing words
             if self.brief_sprite:
@@ -256,19 +258,49 @@ class View(object):
             self.load_sprites()
             self.draw_briefing_words()
 
+    @property
+    def translated_mousepos(self):
+        """
+        Get the mouse position as translated to to screen size ratio.
+        
+        """
+        
+        xy = pygame.mouse.get_pos()
+        scaled_xoffset = (self.scale_center[0] / self.scale_ratio)
+        scaled_yoffset = (self.scale_center[1] / self.scale_ratio)
+        xy = (
+            xy[0] / self.scale_ratio - scaled_xoffset, 
+            xy[1] / self.scale_ratio - scaled_yoffset)
+        print(xy)
+        return xy
+    
+#    def screenpos(self, xy
+
     def mouseDown(self):
         self.dragging_sprite = None
         if self.model.state == STATE_BUILD:
+            
+            #xy = pygame.mouse.get_pos()
+            xy = self.translated_mousepos
+            
+            # sprite click
             for sprite in self.sprites:
-                if sprite.rect.collidepoint(pygame.mouse.get_pos()):
+                if sprite.name == 'human head':
+                    print(sprite.rect, xy)
+                if sprite.rect.collidepoint(xy):
                     self.dragging_sprite = sprite
                     return
-    
+
+            # plant button click
+            button = pygame.Rect(390, 165, 198, 29)
+            if button.collidepoint(self.translated_mousepos):
+                self.model.set_state(STATE_GUNFIGHT)
+
     def mouseUp(self):
         if self.dragging_sprite:
             part = self.dragging_sprite.name
             self.dragging_sprite = None
-            x, y = pygame.mouse.get_pos()
+            x,y = self.translated_mousepos
             if y < 400:
                 self.model.builder.remove_part(part)
             else:
