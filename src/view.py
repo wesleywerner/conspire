@@ -20,12 +20,12 @@ PURPLE = (220, 0, 220)
 
 # parts definition for source image rect
 PARTS_RECT = {
-    'human male torso': (17, 69, 58, 58),
-    'human male head': (89, 14, 98, 90),
-    'human male right arm': (204, 11, 26, 50),
-    'human male left arm': (255, 11, 26, 50),
-    'human male right leg': (204, 88, 38, 34),
-    'human male left leg': (255, 88, 38, 34),
+    'human torso': (14, 23, 18, 51),
+    'human head': (15, 4, 16, 19),
+    'human right arm': (5, 28, 9, 41),
+    'human left arm': (32, 28, 9, 41),
+    'human right leg': (11, 70, 10, 35),
+    'human left leg': (25, 70, 10, 35),
 }
 
 class DraggableSprite(pygame.sprite.Sprite):
@@ -128,6 +128,7 @@ class View(object):
                 part_name.set_colorkey(TRANSPARENT)
                 if part_name:
                     self.canvas.blit(part_name, (13, 370))
+                    return
 
     def draw_body_accuracy(self):
         """

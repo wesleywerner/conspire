@@ -1,8 +1,8 @@
 # parts available for use per level number.
 LEVEL_PARTS = {
-    1: ('human male torso', 'human male head', 
-        'human male left arm', 'human male right arm', 
-        'human male left leg', 'human male right leg',
+    1: ('human torso', 'human head', 
+        'human left arm', 'human right arm', 
+        'human left leg', 'human right leg',
         ),
     2: ('alien torso', 'alien head', 
         'alien left arm', 'alien right arm', 
@@ -18,9 +18,9 @@ DEFAULT_PARTS = {
 
 # parts required to complete a level
 COMPLETION_PARTS = {
-    1: ('human male torso', 'human male head', 
-        'human male left arm', 'human male right arm', 
-        'human male left leg', 'human male right leg',
+    1: ('human torso', 'human head', 
+        'human left arm', 'human right arm', 
+        'human left leg', 'human right leg',
         ),
     2: ('alien torso', 'alien head', 
         'alien left arm', 'alien right arm', 
