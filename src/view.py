@@ -76,7 +76,7 @@ class View(object):
         self.load_background()
         
         # scenario description
-        self.brief_index = 0
+        self.brief_offset = 0
         self.brief_sprite = None
         
         # sprite storage
@@ -144,7 +144,9 @@ class View(object):
             
             # briefing words
             if self.brief_sprite:
-                self.canvas.blit(self.brief_sprite, (14, 22))
+                self.canvas.blit(self.brief_sprite.image, 
+                    (14, 22), 
+                    self.brief_sprite.rect.move(0, self.brief_offset))
             
             # hover part name
             part_name = self.hover_part_name()
@@ -167,13 +169,17 @@ class View(object):
         pygame.display.flip()
         self.clock.tick(FRAMERATE)
 
-    def print_wrapped_text(self, sentence, maxlength, subtext_offset):
+    def print_wrapped_text(self, sentence, maxlength):
         """
         Creates an image with the given words wrapped.
         
         """
 
-        lines = textwrap.wrap(sentence, maxlength)[subtext_offset:subtext_offset + 9]
+        lines = []
+        paragraphs = sentence.split('\n')
+        for p in paragraphs:
+            lines.extend(textwrap.wrap(p, maxlength))
+            lines.append(' ')
         surfii = []
         max_width = 0
         total_height = 0
@@ -200,9 +206,21 @@ class View(object):
         
         """
         
-        self.brief_sprite = self.print_wrapped_text(
-            model_builder.LEVEL_SCENARIOS[self.model.level - 1]
-            , 30, self.brief_index)
+        BRIEF_TEXT_HEIGHT = 150
+        sprite = pygame.sprite.Sprite()
+        image = self.print_wrapped_text(
+            model_builder.LEVEL_SCENARIOS[self.model.level - 1], 30)
+        sprite.image = image
+        sprite.rect = pygame.Rect((0, 0), (image.get_width(), BRIEF_TEXT_HEIGHT))
+        self.brief_sprite = sprite
+
+    def scroll_brief(self, offset):
+        self.brief_offset += offset
+        max_size = self.brief_sprite.rect.height
+        if self.brief_offset > max_size:
+            self.brief_offset = max_size
+        if self.brief_offset < 0:
+            self.brief_offset = 0
     
     def model_event(self, event_name, data):
         
@@ -214,11 +232,6 @@ class View(object):
             self.draw_briefing_words()
 
     def mouseDown(self):
-        """
-        The mouse button was clicked.
-        
-        """
-        
         self.dragging_sprite = None
         if self.model.state == STATE_BUILD:
             for sprite in self.sprites:
@@ -227,37 +240,16 @@ class View(object):
                     return
     
     def mouseUp(self):
-        """
-        The mouse button was released.
-        
-        """
-        
         self.dragging_sprite = None
 
     def mouseWheelUp(self):
-        if self.model.state == STATE_BUILD:
-            if self.brief_index > 0:
-                self.brief_index -= 1
-                self.draw_briefing_words()
+        self.scroll_brief(-16)
 
     def mouseWheelDown(self):
-        if self.model.state == STATE_BUILD:
-            if self.brief_index < 100:
-                self.brief_index += 1
-                self.draw_briefing_words()
+        self.scroll_brief(16)
 
     def keyDown(self, key):
-        """
-        A key was pressed.
-        
-        """
-        
         if key == K_DOWN:
-            if self.brief_index < 100:
-                self.brief_index += 1
-                self.draw_briefing_words()
-
+            self.scroll_brief(16)
         if key == K_UP:
-            if self.brief_index > 0:
-                self.brief_index -= 1
-                self.draw_briefing_words()
+            self.scroll_brief(-16)
