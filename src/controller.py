@@ -1,7 +1,7 @@
 import os
 import pygame
 from pygame.locals import *
-from model import Model
+from model import *
 from view import View
 
 class Controller(object):
@@ -45,6 +45,7 @@ if __name__ == "__main__":
     
     # move along debugging
     model.level = model.level + 1
+    model.set_state(STATE_BUILD)
     
     while controller.running:
         controller.process_input()
