@@ -442,6 +442,7 @@ class View(object):
             
             # exit
             if self.exit_counter == 0:
+                self.model.mission_success = self.model.ufotactical.distance_from_goal < 10
                 self.model.set_state(STATE_RESULTS)
                 
         elif self.model.state == STATE_RESULTS:
