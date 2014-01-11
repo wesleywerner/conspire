@@ -101,7 +101,7 @@ class UFOSprite(pygame.sprite.Sprite):
         pressed = pygame.key.get_pressed()
         lose_acceleration = True
         
-        if not self.autopilot:
+        if not self.autopilot and self.health > 0:
             if pressed[K_LEFT] or pressed[K_a]:
                 self._accelerate(-1, 0)
                 lose_acceleration = False
@@ -155,6 +155,7 @@ class FighterJetSprite(pygame.sprite.Sprite):
         self.fly_region = CANVAS_SIZE[1] / 1.5
         self.movement_speed = random.randint(10.0, 30.0)
         self.autopilot = True
+        self.exitpilot = False
         self._firing = False
     
     def _clamp(self):
@@ -173,6 +174,10 @@ class FighterJetSprite(pygame.sprite.Sprite):
             self.rect.top -= 4
             if self.rect.bottom < CANVAS_SIZE[1] - 100:
                 self.autopilot = False
+        elif self.exitpilot:
+            if self.rect.top < CANVAS_SIZE[1]:
+                self.rect.left += 2
+                self.rect.top += 4
         else:
         
             # move inline with target and fire when ready and able.
@@ -196,6 +201,8 @@ class FighterJetSprite(pygame.sprite.Sprite):
                 self.movement = 0
             self.rect.top += self.movement * 4
             self._clamp()
+            
+            self.exitpilot = self.target.health == 0
 
     @property
     def is_firing(self):
@@ -286,6 +293,10 @@ class View(object):
         
         # player objects
         self.ufo_sprite = None
+        
+        # delay exit state
+        self.exit_counter = None
+        
         
     def load_background(self):
         """
@@ -394,6 +405,10 @@ class View(object):
 
         self.canvas.blit(self.background, (0, 0))
         
+        if self.exit_counter > 0:
+            self.exit_counter -= 1
+            print(self.exit_counter)
+        
         if self.model.state == STATE_BUILD:
         
             # dragging a sprite
@@ -420,6 +435,9 @@ class View(object):
             # help words
             self.draw_ufo_help()
             
+            # exit
+            if self.exit_counter == 0:
+                self.model.set_state(STATE_RESULTS)
         
         # draw sprites
         garbage_sprites = []
@@ -435,18 +453,14 @@ class View(object):
                     # TODO hit sound and explosion
                     garbage_sprites.append(sprite)
                     self.ufo_sprite.take_damage()
-
-                    if self.ufo_sprite.health < 1:
-                        if self.model.ufotactical.distance_from_goal > 0:
-                            # fail
-                            pass
-                        else:
-                            # succeed
-                            pass
+            elif isinstance(sprite, UFOSprite):
+                if self.ufo_sprite.health == 0 and not self.exit_counter:
+                    self.exit_counter = 100
         
         # garbage
         for g in garbage_sprites:
-            self.sprites.remove(g)
+            if g in self.sprites:
+                self.sprites.remove(g)
         
         # confirm
         if self.confirm_action:
@@ -572,6 +586,7 @@ class View(object):
         print('view received event %s => %s' % (event_name, data))
         
         if event_name == 'levelup' or event_name == 'state':
+            self.exit_counter = None
             self.load_background()
             self.load_sprites()
             self.draw_briefing_words()
