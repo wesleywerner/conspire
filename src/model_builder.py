@@ -29,14 +29,15 @@ COMPLETION_PARTS = {
 }
 
 LEVEL_SCENARIOS = (
-    "Welcome to Conspiracy-101, soldier! " \
-    "We represent some -ahem- secretive global interests. " \
-    "The best way to predict the future, is to invent it. " \
-    "But you know all this, hence why you are here, soldier. " \
-    " " \
-    "Your first job is to construct a facade corpse. " \
-    " " \
-    "",
+    "Welcome to Conspiracy 101, agent!" \
+    "\n" \
+    "We represent certain global interests that affect " \
+    "life as we know it. These interests are kept above top secret, " \
+    "privately funded with access to any level of govt, we aim to " \
+    "predict the future." \
+    "\n" \
+    "And the best way to predict the future, is to invent it. " \
+    "So you could say our business is the future.",
 )
 
 class Builder(object):
