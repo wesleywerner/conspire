@@ -87,6 +87,13 @@ class Model(object):
         intro = random.choice((
             'Today, Scientists have discovered one %(item)s ' \
             'during a recent excavation near a historic ruin.',
+            'Students who got lost during a school trip, stumbled ' \
+            'upon a remarkable %(item)s yesterday.',
+            'A demolition site has unearthed a rare %(item)s, which ' \
+            'was luckily not damaged during the detonation.',
+            'Oil drilling company F.U. accidentally unearthed a %(item)s, ' \
+            'officials report. They are using it as a diversion from ' \
+            'recent oil spills.'
             ))
         
         replacers['intro'] = (intro % replacers)
@@ -102,7 +109,19 @@ class Model(object):
         
         # bodies have arms & legs swapped around
         
-        opinion = 'Nothing suspicious about the %(item)s was discovered. '
+        opinion = random.choice((
+            '"The world is very excited about this discovery!", ' \
+            'expers said. "It will change everything, it is a great ' \
+            'moment for mankind indeed!"',
+            'Newspapers and internet blogs proclaim this the biggest ' \
+            'discovery since sliced bread, and say it heralds in a ' \
+            'new age for humankind.',
+            'Popularity over this event is causing stocks to rise ' \
+            'as collectors flock at the opportunity for this rare ' \
+            'item. Investors say the world will be a better place ' \
+            'after all.'
+            ))
+            
         if weirdness > 0:
             if weirdness <= 3:
                 opinion = 'Conspiracist websites are venting about ' \
@@ -160,6 +179,7 @@ class Model(object):
             ''
         
         self.results = (self.results % replacers)
+        print(self.results)
 
     def turn(self):
         """
