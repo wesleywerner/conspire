@@ -467,6 +467,7 @@ class View(object):
             elif isinstance(sprite, UFOSprite):
                 if self.ufo_sprite.health == 0 and not self.exit_counter:
                     self.exit_counter = 100
+                    garbage_sprites.append(sprite)
         
         # garbage
         for g in garbage_sprites:
