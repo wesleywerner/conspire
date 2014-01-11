@@ -55,8 +55,21 @@ class Model(object):
         self.state = new_state
         if new_state == STATE_UFO:
             self.ufotactical.reset_goal()
+        if new_state == STATE_RESULTS:
+            self.analyze_results()
         self.notify('state', new_state)
+    
+    def analyze_results(self):
+        # analyze the body accuracy and for weirdness
         
+        # analyze tactical outcome
+        if self.ufotactical.distance_from_goal > 0:
+            # fail
+            pass
+        else:
+            # succeed
+            pass
+    
     def turn(self):
         """
         Perform a game turn as determined by the FPS of the view.
