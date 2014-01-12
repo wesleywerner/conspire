@@ -44,6 +44,11 @@ PARTS_RECT = {
     'cyclops left arm': (416,61,35,48),
     'cyclops right leg': (358,127,26,63),
     'cyclops left leg': (402,127,31,61),
+
+    'ptreodactyl torso': (543,58,50,87),
+    'ptreodactyl skull': (543,0,72,58),
+    'ptreodactyl right wing': (453,19,90,147),
+    'ptreodactyl left wing': (615,0,54,150),
 }
 
 UFO_RECT = (6,6,88,88)

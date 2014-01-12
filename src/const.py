@@ -18,8 +18,10 @@ LEVEL_PARTS = {
     4: ('cyclops torso', 'cyclops skull', 
         'cyclops right arm', 'cyclops left arm', 
         'cyclops right leg', 'cyclops left leg',
-        )
-    
+        ),
+    5: ('ptreodactyl torso', 'ptreodactyl skull',
+        'ptreodactyl right wing', 'ptreodactyl left wing',
+        ),
 }
 
 # parts a level may start off with as in use
