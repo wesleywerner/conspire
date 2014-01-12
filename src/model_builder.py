@@ -79,7 +79,7 @@ class Builder(object):
         
         if not COMPLETION_PARTS.has_key(self.model.level):
             print('Warning: There are not completion parts defined for level %s.' % self.model.level)
-            return
+            0.0
         
         matches = 0
         unmatches = 0
@@ -89,6 +89,6 @@ class Builder(object):
             else:
                 unmatches += 1
         if matches == 0:
-            return 0
+            return 0.0
         else:
             return max(0, round(float(matches) / len(COMPLETION_PARTS[self.model.level]) * 100) - (unmatches * 25))
