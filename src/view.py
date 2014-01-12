@@ -37,6 +37,13 @@ PARTS_RECT = {
     'trex head': (174,123,56,72),
     'trex tail': (160,0,131,46),
     'trex legs': (168,53,66,63),
+
+    'cyclops torso': (371,60,43,65),
+    'cyclops skull': (379,0,48,59),
+    'cyclops right arm': (334,43,35,74),
+    'cyclops left arm': (416,61,35,48),
+    'cyclops right leg': (358,127,26,63),
+    'cyclops left leg': (402,127,31,61),
 }
 
 UFO_RECT = (6,6,88,88)

@@ -15,7 +15,10 @@ LEVEL_PARTS = {
         'alien left leg', 'alien right leg',
         ),
     3: ('trex torso', 'trex head', 'trex tail', 'trex legs'),
-
+    4: ('cyclops torso', 'cyclops skull', 
+        'cyclops right arm', 'cyclops left arm', 
+        'cyclops right leg', 'cyclops left leg',
+        )
     
 }
 
