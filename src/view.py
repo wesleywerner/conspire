@@ -437,7 +437,7 @@ class View(object):
             for sprite in self.sprites:
                 if sprite.rect.collidepoint(xy):
                     part_name = self.font.render(
-                        sprite.name, False, WHITE, TRANSPARENT)
+                        sprite.name, False, TEXT, TRANSPARENT)
                     part_name.set_colorkey(TRANSPARENT)
                     if part_name:
                         self.canvas.blit(part_name, (13, 370))
@@ -539,17 +539,19 @@ class View(object):
             if self.results_sprite:
                 self.canvas.blit(self.results_sprite, (111, 100))
         
-        # garbage
-        for g in garbage_sprites:
-            if g in self.sprites:
-                self.sprites.remove(g)
-        
-        # confirm
-        if self.confirm_action:
-            csize = self.canvas.get_size()
-            size = pygame.Rect((0, 0), self.confirm_image.get_size())
-            size.center = (csize[0] / 2, csize[1] / 2)
-            self.canvas.blit(self.confirm_image, size)
+        if self.model.state != STATE_MENU:
+            
+            # garbage
+            for g in garbage_sprites:
+                if g in self.sprites:
+                    self.sprites.remove(g)
+            
+            # confirm
+            if self.confirm_action:
+                csize = self.canvas.get_size()
+                size = pygame.Rect((0, 0), self.confirm_image.get_size())
+                size.center = (csize[0] / 2, csize[1] / 2)
+                self.canvas.blit(self.confirm_image, size)
             
         # rescale
         if self.scale_ratio > 1.0:
@@ -738,6 +740,10 @@ class View(object):
         return xy
     
     def mouseDown(self):
+        
+        if self.model.state == STATE_MENU:
+            return
+            
         self.dragging_sprite = None
         xy = self.translated_mousepos
 
