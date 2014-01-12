@@ -808,6 +808,7 @@ class View(object):
             self.load_background()
             
             if self.model.is_new_level:
+                self.brief_offset = 0
                 self.draw_briefing_words()
                 self.exit_counter = None
                 self.load_build_sprites()
