@@ -77,6 +77,10 @@ class Builder(object):
         
         """
         
+        if not COMPLETION_PARTS.has_key(self.model.level):
+            print('Warning: There are not completion parts defined for level %s.' % self.model.level)
+            return
+        
         matches = 0
         unmatches = 0
         for part in self._used_parts:
