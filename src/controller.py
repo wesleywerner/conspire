@@ -9,6 +9,7 @@ class Controller(object):
         self.model = model
         self.view = view
         self.running = True
+        self.last_state = STATE_BUILD
         
     def process_input(self):
         
@@ -19,12 +20,34 @@ class Controller(object):
         
             elif event.type == KEYDOWN:
         
-                if event.key == K_ESCAPE:
-                    self.running = False
+                # Q KEY
+                # Exit if we are in the menu state
+                if event.key == K_q:
+                    if self.model.state == STATE_MENU:
+                        self.running = False
+                
+                # ESCAPE KEY
+                # Always move to the menu
+                # after remembering the current state for resume.
+                elif event.key == K_ESCAPE:
+                    if not self.model.state == STATE_MENU:
+                        self.last_state = self.model.state
+                        self.model.set_state(STATE_MENU)
+
+                # SPACE BAR
                 elif event.key == K_SPACE:
-                    if self.model.state == STATE_RESULTS:
-                        model.level = model.level + 1
-                        self.model.set_state(STATE_BUILD)
+                    
+                    # move to a game state, either the default state
+                    if self.model.level == 0:
+                        self.model.level = 1
+                        
+                    # or the last recorded state.
+                    elif self.model.state == STATE_MENU:
+                        self.model.set_state(self.last_state)
+                    
+                    # results screen moves to the next level
+                    elif self.model.state == STATE_RESULTS:
+                        self.model.level += 1
                 else:
                     view.keyDown(event.key)
                     
@@ -46,11 +69,7 @@ if __name__ == "__main__":
     model = Model()
     view = View(600, 600, model)
     controller = Controller(model, view)
-    
-    # move along debugging
-    model.level = model.level + 1
-    model.set_state(STATE_UFO)
-    
+
     while controller.running:
         controller.process_input()
         model.turn()

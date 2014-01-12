@@ -69,6 +69,7 @@ class Model(object):
         self.ufotactical = UFOTactical(self)
         self.mission_success = False
         self.results = ''
+        self.is_new_level = False
         
         # listeners get notified of model events
         self.listeners = []
@@ -91,27 +92,37 @@ class Model(object):
     @level.setter
     def level(self, value):
         self._level = value
+        self.is_new_level = True
         self.builder.refresh_parts()
+        self.ufotactical.reset_goal()
+        #self.state = STATE_BUILD
         self.notify('levelup', value)
+        self.set_state(STATE_BUILD)
+        self.is_new_level = False
 
     def set_state(self, new_state):
         """
         Set a new game state, as given by the STATE_ constants above.
         """
         
-        self.state = new_state
-        if new_state == STATE_UFO:
-            self.ufotactical.reset_goal()
-            self.analyze_results()
-        if new_state == STATE_RESULTS:
-            self.analyze_results()
-        self.notify('state', new_state)
+        if self.state != new_state:
+            self.state = new_state
+            if new_state == STATE_RESULTS:
+                self.analyze_results()
+            self.notify('state', new_state)
     
     def analyze_results(self):
         """
         Build the results from all played values.
         
         """
+        
+        if self.level >= len(ITEM_TYPES):
+            print('Warning: no item types defined for level %s' % self.level)
+            return
+        if self.level >= len(TACTICAL_TYPE):
+            print('Warning: no tactical types defined for level %s' % self.level)
+            return
         
         # set item types
         item_type = ITEM_TYPES[self.level]
