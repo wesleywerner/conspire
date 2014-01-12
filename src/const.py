@@ -50,19 +50,13 @@ LEVEL_SCENARIOS = (
     "When you are done proceed to plant the evidence.",
     
     "We are in the business of predicting the future, " \
-    "and the best way to predict the future, is to invent it. " \
+    "and the best way to predict the future, is to invent it!" \
     "\n" \
     "We have a situation with one of our underground testing fascilities, " \
     "rumors are spreading of it's existence, and we cannot allow this. " \
-    "We need a distraction for the media. " \
+    "We need a distraction for the media." \
     "\n" \
-    "Construct an alien body in the green area, as accurately as possbile." \
-    "\n" \
-    "",
-    "" \
-    "" \
-    "" \
-    "",
+    "Construct an alien body to deceive the public and distract them.",
     
     "scenario #3",
     "scenario #4",
