@@ -123,10 +123,13 @@ class Model(object):
         if self.level >= len(TACTICAL_TYPE):
             print('Warning: no tactical types defined for level %s' % self.level)
             return
+        if self.level >= len(SCENARIO_TYPE):
+            print('Warning: no scenario types defined for level %s' % self.level)
+            return
         
         # set item types
         item_type = ITEM_TYPES[self.level]
-        mission_type = TACTICAL_TYPE[self.level]
+        scenario_type = SCENARIO_TYPE[self.level]
         
         replacers = {
             'item': item_type,
@@ -139,18 +142,34 @@ class Model(object):
         else:
             replacers['outcome'] = 'FAILURE'
     
-        # intro
-        intro = random.choice((
-            'Today, Scientists have discovered one %(item)s ' \
+        political_intros = (
+            'Oil drilling company "F.U." unearthed a %(item)s. ' \
+            'Officials report they are using it as a diversion from ' \
+            'recent oil spills.',
+            'An anonymous call has brought to light evidence of ' \
+            '%(item)s.',
+            'A fax sent to the chief of police points to an ' \
+            'unnamed person in posession of %(item)s.',
+            '' \
+            '' \
+            '' \
+            '' \
+            )
+        
+        mythical_intros = (
+            'Today, Scientists have discovered %(item)s ' \
             'during a recent excavation near a historic ruin.',
             'Students who got lost during a school trip, stumbled ' \
             'upon a remarkable %(item)s yesterday.',
             'A demolition site has unearthed a rare %(item)s, which ' \
             'was luckily not damaged during the detonation.',
-            'Oil drilling company F.U. accidentally unearthed a %(item)s, ' \
-            'officials report. They are using it as a diversion from ' \
-            'recent oil spills.'
-            ))
+        )
+    
+        # intro
+        if scenario_type == 'political':
+            intro = random.choice(political_intros)
+        else:
+            intro = random.choice(mythical_intros)
         
         replacers['intro'] = (intro % replacers)
         
@@ -161,51 +180,83 @@ class Model(object):
         
         # mission failure increase weirdness
         if not self.mission_success:
-            weirdness += 3
+            weirdness += 5
         
-        # bodies have arms & legs swapped around
+        political_opinions = (
+            'Newspapers and internet blogs fear this ' \
+            'is a sign of the end times.',
+
+            'News about this is causing stocks to plummet ' \
+            'as market players fear substantial loss.',
+
+            'The world is shocked at the news, one blogger ' \
+            'even saying it will bring upon us the zombie apocalypse.',
+
+            'The president is expected to make a statement later today.',
+
+            'Authorities are just starting the investigation.',
+
+            'Expert consultants are being brought in to assist.',
+            
+        )
         
-        opinion = random.choice((
+        mythical_opinions = (
             '"The world is very excited about this discovery!", ' \
             'expers said. "It will change everything, it is a great ' \
             'moment for mankind indeed!"',
+
             'Newspapers and internet blogs proclaim this the biggest ' \
             'discovery since sliced bread, and say it heralds in a ' \
             'new age for humankind.',
-            'Popularity over this event is causing stocks to rise ' \
-            'as collectors flock at the opportunity for this rare ' \
+
+            'News about this is causing stocks to rise ' \
+            'as collectors flock to grab this rare ' \
             'item. Investors say the world will be a better place ' \
-            'after all.'
-            ))
+            'after all!',
+
+            'Blogs say this will inspire a whole generation of game ' \
+            'makers to replace the 3D gaming fad.',
+
+            'Local news papers are running a story on the influx of ' \
+            'tourists and outside experts flocking in.',
+            )
+        
+        if scenario_type == 'political':
+            opinion = random.choice(political_opinions)
+        else:
+            opinion = random.choice(mythical_opinions)
             
+        authenticity = 'The %(item)s seems authentic, nobody is questioning it.'
         if weirdness > 0:
             if weirdness <= 3:
-                opinion = 'Conspiracist websites are venting about ' \
+                authenticity = 'Conspiracist websites are venting about ' \
                     'the authenticity of the %(item)s. Authorities ' \
                     'can neither substantiate nor deny these claims, ' \
                     'and the %(item)s will be wondered about for many ' \
                     'decades to come.'
             elif weirdness <= 6:
-                opinion = 'The %(item)s in question seems to be authentic, ' \
+                authenticity = 'The %(item)s in question seems to be authentic, ' \
                     'yet minor details leave experts dumbfounded and ' \
                     'questioning the legitimacy of it. ' \
                     'It will remain another unanswered mystery unless ' \
                     'more evidence comes to light.'
             elif weirdness <= 9:
-                opinion = 'The %(item)s seems to bea faux, enough ' \
+                authenticity = 'The %(item)s seems to be faux, enough ' \
                     'inconsistencies exist to make the scientific ' \
                     'community unbelievers, but the loyal ' \
                     'cult followers and conspiracists refuse to deny ' \
                     'this discovery as a sign of the truth.'
             else:
-                opinion = 'Experts found multiple flaws in the ' \
+                authenticity = 'Experts found multiple flaws in the ' \
                     '%(item)s, it is known to be falsified. Authorities ' \
                     'have opened investigations, your reputation is tarnished. ' \
                     'Hordes of conspiracists fall to the streets in uproar ' \
                     'for something they now know is a lie!'
         
         opinion = opinion % replacers
+        authenticity = authenticity % replacers
         replacers['opinion'] = opinion
+        replacers['authenticity'] = authenticity
         
         chance = ''
         if self.builder.accuracy >= 100:
@@ -220,19 +271,19 @@ class Model(object):
             chance = 'terrible'
         replacers['chance'] = chance
         
-        self.results = 'Briefing and preperation' \
+        self.results = '-- Mission Report --' \
             '\n' \
-            'One %(item)s was constructed, it\'s authenticity was determined ' \
-            'to be %(accuracy)s percent, giving us a believability ' \
+            '%(item)s were faked, authenticity determined ' \
+            'at %(accuracy)s percent with a believability ' \
             'rating of "%(chance)s".' \
             '\n' \
-            'Mission Result: %(outcome)s' \
+            'Mission Outcome: %(outcome)s' \
             '\n' \
-            'MEDIA STATEMENT EXTRACT' \
+            '-- News Monitor --' \
             '\n' \
             '%(intro)s %(opinion)s' \
             '\n' \
-            ''
+            '%(authenticity)s'
         
         self.results = (self.results % replacers)
         print(self.results)
