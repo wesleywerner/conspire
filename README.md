@@ -8,6 +8,10 @@ conspire is a small series of mini games created for Mini Ludum Dare #48, Jan 20
 * Python 2.7
 * PyGame 1.9.1
 
+# Running
+
+The included shell script `run.sh` takes care of it for you, which essentially runs `python src/controller.py`.
+
 # Credits
 
 Paperdoll male character by yd
@@ -24,3 +28,5 @@ http://opengameart.org/users/jetrel
 
 Fossil artwork by Redshrike
 http://opengameart.org/users/redshrike
+
+Mission Control music by keyboard monkey (myself)
