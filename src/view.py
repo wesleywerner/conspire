@@ -506,12 +506,13 @@ class View(object):
         
         """
         
-        part_name = self.font.render(
-            'accuracy: %s %%' % (self.model.builder.accuracy, ),
-            False, BLACK, TRANSPARENT)
-        part_name.set_colorkey(TRANSPARENT)
-        if part_name:
-            self.canvas.blit(part_name, (13, 420))
+        pass
+        #part_name = self.font.render(
+            #'accuracy: %s %%' % (self.model.builder.accuracy, ),
+            #False, BLACK, TRANSPARENT)
+        #part_name.set_colorkey(TRANSPARENT)
+        #if part_name:
+            #self.canvas.blit(part_name, (13, 420))
 
     def blit(self):
         """
