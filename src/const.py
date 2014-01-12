@@ -53,6 +53,7 @@ DEFAULT_PARTS = {
     1: ('shopping list', 'ludum dare comments'),
     3: ('human torso', 'human head', 'human left arm',),
     4: ('todo list', 'codex page I',),
+    5: ('ptreodactyl left wing', 'cyclops right arm', 'human left leg',),
 }
 
 # parts required to complete a level
@@ -121,7 +122,7 @@ LEVEL_SCENARIOS = (
     "\n" \
     "Report back after the mission for debriefing.",
     
-    "We are in the business of predicting the future, Agent!" \
+    "We are in the business of predicting the future, Agent! " \
     "And the best way to predict the future, is to invent it!" \
     "\n" \
     "We have a situation with one of our underground testing fascilities, " \
@@ -133,7 +134,7 @@ LEVEL_SCENARIOS = (
     "one of our top-secret super experimental aircraft. Remember to " \
     "down it in the green zone for optimal mission success." \
     "\n" \
-    "Well what are you waiting for, you are not in kindergarten" \
+    "Well what are you waiting for, you are not in preschool " \
     "any more!",
     
     "A pertinent problem has arisen regarding the highest persons " \
@@ -142,19 +143,22 @@ LEVEL_SCENARIOS = (
     "In exchange for invaluable information from these informants we " \
     "are doing them a favor." \
     "\n" \
-    "Construct a faux codex book, it will serve to decode ancient " \
-    "texts which were planted to gain leverage over the public, by " \
-    "these men." \
-    "" \
-    "The codex will be taken from the crash site by a fellow agent " \
-    "and secured in another location for ensured discovery. ",
+    "Construct a faux codex book to decode ancient texts. " \
+    "This will gain leverage over the public." \
+    "\n" \
+    "The codex will be taken from the crash site, by a fellow agent, " \
+    "and secured in another location for discovery. " \
+    "\n" \
+    "Remember to dot your i's and cross your t's.",
     
     "Our friends over at the dept. of evolution made a very generous " \
     "donation in our behalf, gaining notoriety with very important " \
     "higher-ups. " \
     "\n" \
     "As a sign of good faith, you will construct a pterodactyl skeleton " \
-    "to be flown out to an undisclosed location.",
+    "to be flown out to an undisclosed location." \
+    "\n" \
+    "This will serve their agenda nicely.",
 
     "Good day, Agent!" \
     "\n" \
@@ -165,8 +169,9 @@ LEVEL_SCENARIOS = (
     "to distract everybody from what is really going on in the world! " \
     "\n" \
     "You must construct one alien corpse, and one T-rex skeleton. " \
-    "The cover story is that dinosaurs were in fact alien of origin, " \
-    "and the discovery of this crashed UFO with the skeleton is proof.",
+    "The cover story is that dinosaurs were in fact alien of origin." \
+    "\n" \
+    "Keep this up, Agent, and one day you'll be the one making up these stories!",
 
 )
 
@@ -188,7 +193,7 @@ SCENARIO_TYPE = (
 ITEM_TYPES = (
     'skip',
     'documents',
-    'body',
+    'high ranking officials body',
     'alien corpse',
     'biblical codex',
     'pterodactyl skeleton',
