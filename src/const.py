@@ -50,7 +50,8 @@ LEVEL_SCENARIOS = (
     "\n" \
     "Construct a fake human body in the green area, as accurately as possbile." \
     "\n" \
-    "When you are done proceed to plant the evidence.",
+    "When you are done proceed to plant the evidence. " \
+    "You will deploy it via a fake crash landing.",
     
     "We are in the business of predicting the future, " \
     "and the best way to predict the future, is to invent it!" \
@@ -59,7 +60,8 @@ LEVEL_SCENARIOS = (
     "rumors are spreading of it's existence, and we cannot allow this. " \
     "We need a distraction for the media." \
     "\n" \
-    "Construct an alien body to deceive the public and distract them.",
+    "Construct an alien body to deceive the public and distract them. " \
+    "You will deploy it via a fake UFO crash landing.",
     
     "scenario #3",
     "scenario #4",
