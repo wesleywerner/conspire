@@ -14,6 +14,9 @@ LEVEL_PARTS = {
         'alien left arm', 'alien right arm', 
         'alien left leg', 'alien right leg',
         ),
+    3: ('trex torso', 'trex head', 'trex tail', 'trex legs'),
+
+    
 }
 
 # parts a level may start off with as in use

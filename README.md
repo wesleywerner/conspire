@@ -11,13 +11,16 @@ conspire is a small series of mini games created for Mini Ludum Dare #48, Jan 20
 # Credits
 
 Paperdoll male character by yd
-http://opengameart.org/content/paperdoll-male-character
+http://opengameart.org/users/yd
 
 Emulogic font by Freaky Fonts (see the txt in data/ for more)
 http://www.fontspace.com/freaky-fonts/emulogic
 
 Space Starter Set by CruzR
-http://opengameart.org/content/space-starter-kit
+http://opengameart.org/users/cruzr
 
-Explosion 
-http://opengameart.org/content/explosion-animations
+Explosion by Jetrel
+http://opengameart.org/users/jetrel
+
+Fossil artwork by Redshrike
+http://opengameart.org/users/redshrike
