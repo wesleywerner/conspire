@@ -88,8 +88,7 @@ class Model(object):
     
     @level.setter
     def level(self, value):
-        if value > len(LEVEL_SCENARIOS):
-            #self._level = 0
+        if value == len(LEVEL_SCENARIOS):
             self.set_state(STATE_END)
         else:
             self._level = value
