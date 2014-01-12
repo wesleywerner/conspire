@@ -50,11 +50,13 @@ PARTS_RECT = {
     'ptreodactyl right wing': (453,19,90,147),
     'ptreodactyl left wing': (615,0,54,150),
     
-    'fake document': (677,0,112,150),
+    'tax returns': (677,0,112,150),
     'shopping list': (677,0,112,150),
     'todo list': (677,0,112,150),
     'ludum dare comments': (677,0,112,150),
     'bank accounts': (677,0,112,150),
+    'website passwords': (677,0,112,150),
+    'IP address scamlist': (677,0,112,150),
     
 }
 
@@ -489,7 +491,7 @@ class View(object):
             for sprite in self.sprites:
                 if sprite.rect.collidepoint(xy):
                     part_name = self.font.render(
-                        sprite.name, False, TEXT, TRANSPARENT)
+                        sprite.name, False, BLACK, TRANSPARENT)
                     part_name.set_colorkey(TRANSPARENT)
                     if part_name:
                         self.canvas.blit(part_name, (13, 370))
@@ -503,7 +505,7 @@ class View(object):
         
         part_name = self.font.render(
             'accuracy: %s %%' % (self.model.builder.accuracy, ),
-            False, TEXT, TRANSPARENT)
+            False, BLACK, TRANSPARENT)
         part_name.set_colorkey(TRANSPARENT)
         if part_name:
             self.canvas.blit(part_name, (13, 420))
@@ -532,13 +534,13 @@ class View(object):
                     (14, 22), 
                     self.brief_sprite.rect.move(0, self.brief_offset))
             
-            self.draw_hover_part_name()
-            self.draw_body_accuracy()
-        
             # draw sprites
             for sprite in self.sprites:
                 sprite.update()
                 self.canvas.blit(sprite.image, sprite.rect)
+
+            self.draw_hover_part_name()
+            self.draw_body_accuracy()
 
         elif self.model.state in (STATE_UFO, STATE_FLIGHT):
             
