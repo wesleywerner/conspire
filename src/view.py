@@ -664,11 +664,11 @@ class View(object):
         if self.model.state in (STATE_UFO, STATE_FLIGHT):
             # for the first few ticks
             if self.model.ufotactical.clock  < 250: #250
-                # draw the agent picture
-                self.canvas.blit(self.agent_image, (10, 10))
-                # and show some helpful words of wisdom
+                # show some helpful words of wisdom
                 if self.tactical_info_sprite:
                     self.canvas.blit(self.tactical_info_sprite, (220, 40))
+                    # draw the agent picture
+                    self.canvas.blit(self.agent_image, (10, 10))
             
     def draw_ufo_healthbar(self):
         hp = self.player_craft.health * 8 + 1
@@ -743,14 +743,33 @@ class View(object):
         
         elif self.model.state in (STATE_UFO, STATE_FLIGHT):
             
-            self.tactical_info_sprite = self.print_wrapped_text(
-                'Avoid gunfire until you reach the target zone. ' \
-                'Once in the zone, you must get shot down on purpose. ' \
-                'Timing is critical, good luck Agent!',
-                30,
-                self.font,
-                TEXT
-                )
+            if self.model.level == 1:
+                words = 'Avoid gunfire until you reach the target zone. ' \
+                'Once in the zone force the craft down by engaging ' \
+                'enemy fire. Use the arrows or wsad keys. Good luck Agent!'
+
+            elif self.model.level == 2:
+                words = 'Again, only get shot down when inside the ' \
+                'Green Zone. Use the arrows or wsad keys. Good luck Agent!'
+
+            elif self.model.level == 3:
+                words = 'You know the drill by now, Agent. ' \
+                'Keep it tidy and see you at debriefing! '
+
+            elif self.model.level == 5:
+                words = 'Look sharp, Agent. Reports indicate more ' \
+                'resistance, incoming!'
+            
+            else:
+                self.tactical_info_sprite = None
+                return
+
+            if words:
+                helpful_words = self.print_wrapped_text(
+                    words, 30, self.font, TEXT )
+                self.tactical_info_sprite = helpful_words.copy()
+                self.tactical_info_sprite.fill(BORDER)
+                self.tactical_info_sprite.blit(helpful_words, (0,0))
         
         elif self.model.state == STATE_RESULTS:
             
@@ -821,9 +840,10 @@ class View(object):
             if affirm.collidepoint(xy):
                 
                 if self.confirm_action == 'plant':
-                    print('level is', self.model.level)
-                    print('tactical mode is', TACTICAL_TYPE[self.model.level])
-                    self.model.set_state(TACTICAL_TYPE[self.model.level])
+                    if self.model.level == len(TACTICAL_TYPE):
+                        print('Warning: There are no tactical missions for level %s' % self.model.level)
+                    else:
+                        self.model.set_state(TACTICAL_TYPE[self.model.level])
                 
                 self.confirm_action = None
                 
