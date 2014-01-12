@@ -49,6 +49,13 @@ PARTS_RECT = {
     'ptreodactyl skull': (543,0,72,58),
     'ptreodactyl right wing': (453,19,90,147),
     'ptreodactyl left wing': (615,0,54,150),
+    
+    'fake document': (677,0,112,150),
+    'shopping list': (677,0,112,150),
+    'todo list': (677,0,112,150),
+    'ludum dare comments': (677,0,112,150),
+    'bank accounts': (677,0,112,150),
+    
 }
 
 UFO_RECT = (6,6,88,88)

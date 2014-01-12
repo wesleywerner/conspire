@@ -22,6 +22,10 @@ LEVEL_PARTS = {
     5: ('ptreodactyl torso', 'ptreodactyl skull',
         'ptreodactyl right wing', 'ptreodactyl left wing',
         ),
+    6: ('fake document', 'shopping list', 'todo list',
+        'ludum dare comments', 'bank accounts',
+        ),
+    
 }
 
 # parts a level may start off with as in use
