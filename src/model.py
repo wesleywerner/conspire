@@ -11,6 +11,9 @@ STATE_RESULTS = 5
 
 class UFOTactical(object):
     
+    # game ticks
+    TIME_TO_WAIT_BEFORE_ENGAGING_JETS = 200
+    
     def __init__(self, model):
         self.model = model
         self.distance_from_goal = 0
@@ -20,7 +23,7 @@ class UFOTactical(object):
 
     def reset_goal(self):
         self.clock = 0
-        self.distance_from_goal = 750
+        self.distance_from_goal = random.randint(1000, 2000)
         self.fighter_jets = []
     
     @property
@@ -36,7 +39,7 @@ class UFOTactical(object):
         if self.distance_from_goal < 0:
             self.distance_from_goal = 0
         
-        if self.clock > 26:
+        if self.clock > self.TIME_TO_WAIT_BEFORE_ENGAGING_JETS:
 
             if len(self.fighter_jets) < self.max_jets:
                 if random.randint(1, 100) < 10:
