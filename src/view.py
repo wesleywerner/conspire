@@ -403,6 +403,8 @@ class View(object):
             self.background = pygame.image.load(os.path.join('..', 'data', 'ufo-screen.png')).convert()
         if self.model.state == STATE_RESULTS:
             self.background = pygame.image.load(os.path.join('..', 'data', 'results-screen.png')).convert()
+        if self.model.state == STATE_END:
+            self.background = pygame.image.load(os.path.join('..', 'data', 'end-screen.png')).convert()
 
     def load_build_sprites(self):
         """
