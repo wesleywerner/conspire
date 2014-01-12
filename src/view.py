@@ -231,6 +231,42 @@ class MissileSprite(pygame.sprite.Sprite):
             self.destroy = True
 
 
+class ExplosionSprite(pygame.sprite.Sprite):
+    
+    small_size = (57, 57)
+    large_size = (89, 89)
+    small_rects = (
+        (1,185),(61,185),(121,185),(181,185),(241,185),
+        (1,245),(61,245),(121,245),(181,245),(241,245),
+        )
+    large_rects = (
+        (1,01),(93,01),(185,01),(277,01),(369,01),
+        (1,93),(93,93),(185,93),(277,93),(369,93),
+        )
+    
+    def __init__(self, sprites, is_small=True):
+        pygame.sprite.Sprite.__init__(self)
+        self.sprites = sprites
+        self.animation_index = 0
+        self.destroy = False
+        self.image = None
+        self.is_small = is_small
+        self._set_sprite()
+        self.rect = self.image.get_rect()
+    
+    def _set_sprite(self):
+        if self.is_small:
+            self.image = self.sprites.subsurface(self.small_rects[self.animation_index], self.small_size)
+        else:
+            self.image = self.sprites.subsurface(self.large_rects[self.animation_index], self.large_size)
+
+    def update(self):
+        
+        self._set_sprite()
+        self.animation_index += 1
+        self.destroy = self.animation_index >= 10
+
+
 class View(object):
     
     def __init__(self, pixel_width, pixel_height, model):
@@ -276,15 +312,21 @@ class View(object):
         self.brief_offset = 0
         self.brief_sprite = None
         self.tactical_info_sprite = None
-        
-        # sprite storage
-        self.dragging_sprite = None
+
+        # sprite sheets
         self.parts_sprite_sheet = pygame.image.load(os.path.join('..', 'data', 'parts.png')).convert()
         self.parts_sprite_sheet.set_colorkey(TRANSPARENT)
         self.ufo_sprite_sheet = pygame.image.load(os.path.join('..', 'data', 'ufo-sprites.png')).convert()
         self.ufo_sprite_sheet.set_colorkey(TRANSPARENT)
+        self.explosion_sprite_sheet = pygame.image.load(os.path.join('..', 'data', 'explosion3.png')).convert()
+        self.explosion_sprite_sheet.set_colorkey(TRANSPARENT)
+        
+        # sprite storage
+        self.dragging_sprite = None
         self.sprites = []
         self.load_sprites()
+        
+        # font storage
         self.font = pygame.font.Font(os.path.join('..', 'data', 'emulogic.ttf'), 12)
         self.smallfont = pygame.font.Font(os.path.join('..', 'data', 'emulogic.ttf'), 10)
         
@@ -372,6 +414,16 @@ class View(object):
         missile.rect.center = jet.rect.center
         missile.rect.left += (26 * random.randint(-1, 1))
         self.sprites.append(missile)
+    
+    def create_explosion(self, target, is_small=True):
+        """
+        Creat an explosion near target (a sprite object).
+        
+        """
+        
+        explosion = ExplosionSprite(self.explosion_sprite_sheet, is_small)
+        explosion.rect.center = target.rect.center
+        self.sprites.append(explosion)
         
     def draw_hover_part_name(self):
         """
@@ -465,9 +517,17 @@ class View(object):
                         # TODO hit sound and explosion
                         garbage_sprites.append(sprite)
                         self.ufo_sprite.take_damage()
+                        if self.ufo_sprite.health > 0:
+                            self.create_explosion(sprite, is_small=True)
+                        else:
+                            self.create_explosion(sprite, is_small=False)
+                            
             elif isinstance(sprite, UFOSprite):
                 if self.ufo_sprite.health == 0 and not self.exit_counter:
                     self.exit_counter = 100
+                    garbage_sprites.append(sprite)
+            elif isinstance(sprite, ExplosionSprite):
+                if sprite.destroy:
                     garbage_sprites.append(sprite)
         
         # garbage

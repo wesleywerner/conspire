@@ -18,3 +18,6 @@ http://www.fontspace.com/freaky-fonts/emulogic
 
 Space Starter Set by CruzR
 http://opengameart.org/content/space-starter-kit
+
+Explosion 
+http://opengameart.org/content/explosion-animations
