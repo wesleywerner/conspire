@@ -32,15 +32,29 @@ COMPLETION_PARTS = {
 LEVEL_SCENARIOS = (
     "Welcome to Conspiracy 101, agent!" \
     "\n" \
+    "Use your arrows or mouse wheel to scroll through this briefing." \
+    "\n" \
     "We represent certain global interests that affect " \
     "life as we know it. These interests are kept above top secret, " \
-    "privately funded with access to any level of govt, we aim to " \
-    "predict the future." \
+    "privately funded with access to any level of government." \
     "\n" \
-    "And the best way to predict the future, is to invent it. " \
-    "So you could say our business is the future.",
+    "We have a situation with one of our underground testing fascilities, " \
+    "rumors are spreading of it's existence, and we cannot allow this. " \
+    "We need a distraction for the media. " \
+    "\n" \
+    "Construct an alien body in the green area, as accurately as possbile." \
+    "\n" \
+    "When you are done proceed to plant the evidence.",
     
-    "scenario #2",
+    "We are in the business of predicting the future, " \
+    "and the best way to predict the future, is to invent it. " \
+    "\n" \
+    "",
+    "" \
+    "" \
+    "" \
+    "",
+    
     "scenario #3",
     "scenario #4",
     "scenario #5",
