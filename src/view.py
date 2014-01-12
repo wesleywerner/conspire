@@ -398,6 +398,10 @@ class View(object):
         # delay exit state
         self.exit_counter = None
         
+        # music
+        pygame.mixer.music.load(os.path.join('..', 'data', 'kbmonkey-mission_control.xm'))
+        pygame.mixer.music.play(-1)
+        
         
     def load_background(self):
         """
@@ -775,6 +779,10 @@ class View(object):
             elif self.model.level == 5:
                 words = 'Look sharp, Agent. Reports indicate more ' \
                 'resistance, incoming!'
+            
+            elif self.model.level == 6:
+                words = 'Something has come up, I am going in hiding ' \
+                    'and so should you! Finish the mission and disappear!'
             
             else:
                 self.tactical_info_sprite = None
