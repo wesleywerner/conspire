@@ -50,13 +50,13 @@ PARTS_RECT = {
     'ptreodactyl right wing': (453,19,90,147),
     'ptreodactyl left wing': (615,0,54,150),
     
-    'tax returns': (677,0,112,150),
-    'shopping list': (677,0,112,150),
-    'todo list': (677,0,112,150),
-    'ludum dare comments': (677,0,112,150),
-    'bank accounts': (677,0,112,150),
-    'website passwords': (677,0,112,150),
-    'IP address scamlist': (677,0,112,150),
+    'tax returns': (677,0,75,100),
+    'shopping list': (677,0,75,100),
+    'todo list': (677,0,75,100),
+    'ludum dare comments': (677,0,75,100),
+    'bank accounts': (677,0,75,100),
+    'website passwords': (677,0,75,100),
+    'IP address scamlist': (677,0,75,100),
     
 }
 
@@ -755,7 +755,7 @@ class View(object):
     def scroll_brief(self, offset):
         if self.model.state == STATE_BUILD:
             self.brief_offset += offset
-            max_size = self.brief_sprite.rect.height * 2
+            max_size = self.brief_sprite.rect.height * 6
             if self.brief_offset > max_size:
                 self.brief_offset = max_size
             if self.brief_offset < 0:
