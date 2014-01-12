@@ -67,6 +67,7 @@ MISSILE_RECT = (194,12,4,28)
 RADAR_RECT = (210,10,80,80)
 RADAR_HOSTILE_RECT = (245,3,4,4)
 RADAR_GOAL_RECT = (250,3,4,4)
+GREEN_ZONE_RECT = (400, 19, 100,52)
 
 
 class DraggableSprite(pygame.sprite.Sprite):
@@ -593,7 +594,7 @@ class View(object):
                 elif isinstance(sprite, ExplosionSprite):
                     if sprite.destroy:
                         garbage_sprites.append(sprite)
-
+            
         elif self.model.state == STATE_RESULTS:
             
             # report!
@@ -639,7 +640,7 @@ class View(object):
             # draw a dot for it's distance.
             epos = (
                 50,
-                50 + ((enemy / 500.0) * 40)
+                45 + ((enemy / 500.0) * 40)
                 )
             self.canvas.blit(
                 self.player_craft_sheet.subsurface(RADAR_HOSTILE_RECT),
@@ -647,12 +648,16 @@ class View(object):
 
         # dot for goal distance
         epos = (
-            50 + (RADAR_GOAL_RECT[3] / 2), 
+            50, 
             50 - ((self.model.ufotactical.distance_from_goal / 2000.0) * 40)
             )
         self.canvas.blit(
             self.player_craft_sheet.subsurface(RADAR_GOAL_RECT),
             epos)
+
+        # green zone
+        if self.model.ufotactical.distance_from_goal == 0:
+            self.canvas.blit(self.player_craft_sheet.subsurface(GREEN_ZONE_RECT), (10, 120))
 
     def draw_ufo_help(self):
         
