@@ -716,6 +716,7 @@ class View(object):
                 self.load_build_sprites()
             
             if self.model.state == STATE_UFO and not self.ufo_sprite:
+                self.draw_briefing_words()
                 self.load_ufo_sprites()
                 
             if self.model.state == STATE_RESULTS:
