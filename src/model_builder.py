@@ -77,11 +77,14 @@ class Builder(object):
         
         """
         
-        matches = 0.0
+        matches = 0
+        unmatches = 0
         for part in self._used_parts:
             if part in COMPLETION_PARTS[self.model.level]:
-                matches += 1.0
-        if matches == 0.0:
+                matches += 1
+            else:
+                unmatches += 1
+        if matches == 0:
             return 0
         else:
-            return round(matches / len(COMPLETION_PARTS[self.model.level]) * 100)
+            return max(0, round(float(matches) / len(COMPLETION_PARTS[self.model.level]) * 100) - (unmatches * 25))
