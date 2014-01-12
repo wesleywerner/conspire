@@ -324,6 +324,7 @@ class View(object):
         # background image storage
         self.background = self.canvas.copy()
         self.load_background()
+        self.scrolling_background_yoffset = 0
         
         # scenario description
         self.brief_offset = 0
@@ -516,6 +517,13 @@ class View(object):
                 self.canvas.blit(sprite.image, sprite.rect)
 
         elif self.model.state in (STATE_UFO, STATE_FLIGHT):
+            
+            bh = self.background.get_height()
+            self.scrolling_background_yoffset += 15
+            if self.scrolling_background_yoffset > bh:
+                self.scrolling_background_yoffset = 0
+            self.canvas.blit(self.background, (0, self.scrolling_background_yoffset))
+            self.canvas.blit(self.background, (0, self.scrolling_background_yoffset - bh))
             
             # radar
             self.draw_tactical_radar()
