@@ -378,6 +378,7 @@ class View(object):
         
         # sprite storage
         self.dragging_sprite = None
+        self.drag_offset = None
         self.sprites = []
         
         # font storage
@@ -539,7 +540,10 @@ class View(object):
         
             # dragging a sprite
             if self.dragging_sprite:
-                self.dragging_sprite.rect.center =  self.translated_mousepos
+                self.dragging_sprite.rect.center = (
+                    self.translated_mousepos[0] - self.drag_offset[0],
+                    self.translated_mousepos[1] - self.drag_offset[1],
+                    )
             
             # briefing words
             if self.brief_sprite:
@@ -875,6 +879,10 @@ class View(object):
                     # place dragging sprite on top
                     self.sprites.remove(self.dragging_sprite)
                     self.sprites.append(self.dragging_sprite)
+                    self.drag_offset = (
+                        xy[0] - sprite.rect.center[0],
+                        xy[1] - sprite.rect.center[1],
+                        )
                     return
 
             # plant button click
@@ -885,8 +893,8 @@ class View(object):
     def mouseUp(self):
         if self.dragging_sprite:
             part = self.dragging_sprite.name
+            x,y = self.dragging_sprite.rect.center
             self.dragging_sprite = None
-            x,y = self.translated_mousepos
             if y < 400:
                 self.model.builder.remove_part(part)
             else:
