@@ -1,3 +1,4 @@
+import random
 from const import *
 
 class Builder(object):
@@ -21,11 +22,24 @@ class Builder(object):
         """
 
         self.refresh_parts()
-        combined = []
-        for k, v in LEVEL_PARTS.items():
-            if k <= self.model.level:
-                combined.extend(v)
+        combined = list(LEVEL_PARTS[self.model.level])
+        
+        # add some random parts from other levels
+        for n in range(1, random.randint(0, self.model.level)):
+            print('including another')
+            combined.append(
+                random.choice(
+                    LEVEL_PARTS[random.randint(1, len(LEVEL_PARTS))]
+                )
+            )
+        
         return combined
+        
+        #combined = []
+        #for k, v in LEVEL_PARTS.items():
+            #if k <= self.model.level:
+                #combined.extend(v)
+        #return combined
 
     def add_part(self, part):
         """
