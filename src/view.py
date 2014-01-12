@@ -722,7 +722,7 @@ class View(object):
 
             BRIEF_TEXT_HEIGHT = 150
 
-            brief_text = LEVEL_SCENARIOS[self.model.level - 1]
+            brief_text = LEVEL_SCENARIOS[self.model.level]
             if self.model.level > 1:
                 if self.model.mission_success:
                     brief_text = 'My commendations on your last ' \
