@@ -145,14 +145,10 @@ class Model(object):
             'Oil drilling company "F.U." unearthed a %(item)s. ' \
             'Officials report they are using it as a diversion from ' \
             'recent oil spills.',
-            'An anonymous call has brought to light evidence of ' \
+            'An anonymous call has brought to light evidence of a ' \
             '%(item)s.',
             'A fax sent to the chief of police points to an ' \
             'unnamed person in posession of %(item)s.',
-            '' \
-            '' \
-            '' \
-            '' \
             )
         
         mythical_intros = (
@@ -179,7 +175,7 @@ class Model(object):
         
         # mission failure increase weirdness
         if not self.mission_success:
-            weirdness += 5
+            weirdness += 4
         
         political_opinions = (
             'Newspapers and internet blogs fear this ' \
@@ -201,7 +197,7 @@ class Model(object):
         
         mythical_opinions = (
             '"The world is very excited about this discovery!", ' \
-            'expers said. "It will change everything, it is a great ' \
+            'experts said. "It will change everything, it is a great ' \
             'moment for mankind indeed!"',
 
             'Newspapers and internet blogs proclaim this the biggest ' \
@@ -228,7 +224,7 @@ class Model(object):
         authenticity = 'The %(item)s seems authentic, nobody is questioning it.'
         if weirdness > 0:
             if weirdness <= 3:
-                authenticity = 'Conspiracist websites are venting about ' \
+                authenticity = 'Conspiracist websites are wondering about ' \
                     'the authenticity of the %(item)s. Authorities ' \
                     'can neither substantiate nor deny these claims, ' \
                     'and the %(item)s will be wondered about for many ' \
@@ -236,9 +232,8 @@ class Model(object):
             elif weirdness <= 6:
                 authenticity = 'The %(item)s in question seems to be authentic, ' \
                     'yet minor details leave experts dumbfounded and ' \
-                    'questioning the legitimacy of it. ' \
-                    'It will remain another unanswered mystery unless ' \
-                    'more evidence comes to light.'
+                    'questioning the legitimacy of it, ' \
+                    'remaining another unanswered mystery'
             elif weirdness <= 9:
                 authenticity = 'The %(item)s seems to be faux, enough ' \
                     'inconsistencies exist to make the scientific ' \
