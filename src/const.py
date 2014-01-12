@@ -21,21 +21,38 @@ LEVEL_PARTS = {
         'alien left leg', 'alien right leg',
         'human torso', 'human head', 'human left arm',
         ),
-    4: ('trex torso', 'trex head', 'trex tail', 'trex legs'),
-    5: ('cyclops torso', 'cyclops skull', 
-        'cyclops right arm', 'cyclops left arm', 
-        'cyclops right leg', 'cyclops left leg',
+    4: ('codex page I', 'codex page II', 'codex page III',
+        'codex page IV', 'codex page V', 'codex page VI',
+        'biblical references', 'book of psalms', 'book of tomas',
+        'todo list', 'ludum dare comments'
         ),
-    6: ('ptreodactyl torso', 'ptreodactyl skull',
+    5: ('ptreodactyl torso', 'ptreodactyl skull',
         'ptreodactyl right wing', 'ptreodactyl left wing',
+        'cyclops right arm', 'cyclops left leg',
+        'human left arm', 'human left leg',
         ),
-    
+    6: ('alien torso', 'alien head', 
+        'alien left arm', 'alien right arm', 
+        'alien left leg', 'alien right leg',
+        'trex torso', 'trex head', 'trex tail', 'trex legs',
+        'human torso', 'human head', 
+        'human left arm', 'human right arm', 
+        'human left leg', 'human right leg',
+        ),
+        
 }
+
+    #500: ('cyclops torso', 'cyclops skull', 
+        #'cyclops right arm', 'cyclops left arm', 
+        #'cyclops right leg', 'cyclops left leg',
+        #),
+    
 
 # parts a level may start off with as in use
 DEFAULT_PARTS = {
     1: ('shopping list', 'ludum dare comments'),
     3: ('human torso', 'human head', 'human left arm',),
+    4: ('todo list', 'codex page I',),
 }
 
 # parts required to complete a level
@@ -50,6 +67,17 @@ COMPLETION_PARTS = {
     3: ('alien torso', 'alien head', 
         'alien left arm', 'alien right arm', 
         'alien left leg', 'alien right leg',
+        ),
+    4: ('codex page I', 'codex page II', 'codex page III',
+        'codex page IV', 'codex page V', 'codex page VI',
+        ),
+    5: ('ptreodactyl torso', 'ptreodactyl skull',
+        'ptreodactyl right wing', 'ptreodactyl left wing',
+        ),
+    6: ('alien torso', 'alien head', 
+        'alien left arm', 'alien right arm', 
+        'alien left leg', 'alien right leg',
+        'trex torso', 'trex head', 'trex tail', 'trex legs'
         ),
 }
 
@@ -107,6 +135,38 @@ LEVEL_SCENARIOS = (
     "\n" \
     "Well what are you waiting for, you are not in kindergarten" \
     "any more!",
+    
+    "A pertinent problem has arisen regarding the highest persons " \
+    "in state, specifically the ones involved in the secular movements. " \
+    "\n" \
+    "In exchange for invaluable information from these informants we " \
+    "are doing them a favor." \
+    "\n" \
+    "Construct a faux codex book, it will serve to decode ancient " \
+    "texts which were planted to gain leverage over the public, by " \
+    "these men." \
+    "" \
+    "The codex will be taken from the crash site by a fellow agent " \
+    "and secured in another location for ensured discovery. ",
+    
+    "Our friends over at the dept. of evolution made a very generous " \
+    "donation in our behalf, gaining notoriety with very important " \
+    "higher-ups. " \
+    "\n" \
+    "As a sign of good faith, you will construct a pterodactyl skeleton " \
+    "to be flown out to an undisclosed location.",
+
+    "Good day, Agent!" \
+    "\n" \
+    "Today is a very special day, we are going to combine the ultimate " \
+    "of myths. A lot of people are unsure about the existence of " \
+    "extra terrestrials, and many others the same about dinosaurs. " \
+    "We will play on their uncertainty of both and create a story " \
+    "to distract everybody from what is really going on in the world! " \
+    "\n" \
+    "You must construct one alien corpse, and one T-rex skeleton. " \
+    "The cover story is that dinosaurs were in fact alien of origin, " \
+    "and the discovery of this crashed UFO with the skeleton is proof.",
 
 )
 
@@ -118,9 +178,9 @@ SCENARIO_TYPE = (
     'political',
     'political',
     'myth',
-    '',
-    '',
-    '',
+    'myth',
+    'myth',
+    'myth',
     '',
 )
 
@@ -130,9 +190,9 @@ ITEM_TYPES = (
     'documents',
     'body',
     'alien corpse',
-    '',
-    '',
-    '',
+    'biblical codex',
+    'pterodactyl skeleton',
+    'alien corpse and T-rex skeleton',
     '',
 )
 
@@ -142,7 +202,7 @@ TACTICAL_TYPE = (
     STATE_FLIGHT,
     STATE_FLIGHT,
     STATE_UFO,
-    0,
-    0,
-    0,
+    STATE_FLIGHT,
+    STATE_FLIGHT,
+    STATE_UFO,
 )
