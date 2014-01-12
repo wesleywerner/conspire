@@ -21,6 +21,11 @@ class Builder(object):
         
         """
 
+        if not LEVEL_PARTS.has_key(self.model.level):
+            self.model.level
+            print('Warning: level %s has no level parts defined.' % self.model.level)
+            return []
+            
         self.refresh_parts()
         combined = list(LEVEL_PARTS[self.model.level])
         
