@@ -460,10 +460,11 @@ class View(object):
                 if sprite.is_firing:
                     self.fire_jet_missile(sprite)
             elif isinstance(sprite, MissileSprite):
-                if self.ufo_sprite.rect.colliderect(sprite.rect):
-                    # TODO hit sound and explosion
-                    garbage_sprites.append(sprite)
-                    self.ufo_sprite.take_damage()
+                if self.ufo_sprite.health > 0:
+                    if self.ufo_sprite.rect.colliderect(sprite.rect):
+                        # TODO hit sound and explosion
+                        garbage_sprites.append(sprite)
+                        self.ufo_sprite.take_damage()
             elif isinstance(sprite, UFOSprite):
                 if self.ufo_sprite.health == 0 and not self.exit_counter:
                     self.exit_counter = 100
