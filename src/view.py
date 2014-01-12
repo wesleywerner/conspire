@@ -205,13 +205,13 @@ class FighterJetSprite(pygame.sprite.Sprite):
             
             if abs(diff) > self.movement_speed:
                 self.rect.left += diff / self.movement_speed
-            else:
-                if self.reload_time > 0:
-                    self.reload_time -= 1
-                if self.reload_time < 20:
-                    print('Fire!')
-                    self._firing = True
-                    self.reload_time = 30
+            
+            if self.reload_time > 0:
+                self.reload_time -= 1
+            elif abs(diff) < 100:
+                print('Fire!')
+                self._firing = True
+                self.reload_time = 45
             
             if random.randint(1, 100) < 5:
                 self.movement = -1
