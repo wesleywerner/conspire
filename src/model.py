@@ -2,11 +2,11 @@ import os
 import random
 from model_builder import *
 
-STATE_MENU = 1
-STATE_BUILD = 2
-STATE_UFO = 3
-STATE_BURY = 4
-STATE_RESULTS = 5
+#STATE_MENU = 1
+#STATE_BUILD = 2
+#STATE_UFO = 3
+#STATE_FLIGHT = 4
+#STATE_RESULTS = 5
 
 
 class UFOTactical(object):
@@ -245,7 +245,7 @@ class Model(object):
         Perform a game turn as determined by the FPS of the view.
         """
         
-        if self.state == STATE_UFO:
+        if self.state in (STATE_UFO, STATE_FLIGHT):
             self.ufotactical.update()
             if self.ufotactical.new_jets:
                 self.ufotactical.deploy_jet()

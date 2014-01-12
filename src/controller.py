@@ -1,8 +1,9 @@
 import os
 import pygame
 from pygame.locals import *
-from model import *
+from model import Model
 from view import View
+from const import *
 
 class Controller(object):
     def __init__(self, model, view):

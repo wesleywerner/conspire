@@ -3,8 +3,7 @@ import textwrap
 import random
 import pygame
 from pygame.locals import *
-from model import *
-import model_builder
+from const import *
 
 FRAMERATE = 30
 CANVAS_SIZE = (600, 600)
@@ -37,6 +36,7 @@ PARTS_RECT = {
 
 UFO_RECT = (6,6,88,88)
 FIGHTER_RECT = (113,12,74,75)
+LIGHTFIGHTER_RECT = (313,12,74,75)
 MISSILE_RECT = (194,12,4,28)
 RADAR_RECT = (210,10,80,80)
 RADAR_HOSTILE_RECT = (245,3,4,4)
@@ -51,13 +51,16 @@ class DraggableSprite(pygame.sprite.Sprite):
         self.image = image
         self.rect = rect
 
-class UFOSprite(pygame.sprite.Sprite):
+class AFOSprite(pygame.sprite.Sprite):
+    """
+    Player controller Air Force One sprite.
+    
+    """
     
     def __init__(self, image):
         pygame.sprite.Sprite.__init__(self)
-        self.name = 'UFO'
+        self.name = 'AFO'
         self.original_image = image
-        self.angle = 0
         self.image = image
         self.rect = image.get_rect()
         self.fly_region = 0
@@ -128,22 +131,36 @@ class UFOSprite(pygame.sprite.Sprite):
         
         if lose_acceleration:
             if self.speed[0] > 0:
-                self.speed[0] -= 2
+                self.speed[0] -= 1
             elif self.speed[0] < 0:
-                self.speed[0] += 2
+                self.speed[0] += 1
             if self.speed[1] > 0:
-                self.speed[1] -= 2
+                self.speed[1] -= 1
             elif self.speed[1] < 0:
-                self.speed[1] += 2
+                self.speed[1] += 1
         
-        self.angle = (self.angle + 10) % 360
-        self.image = pygame.transform.rotate(self.original_image, self.angle)
-        self.rect = self.image.get_rect(center=self.rect.center)
-
     def take_damage(self):
         self.health -= random.randint(1, 3)
         if self.health < 0:
             self.health = 0
+
+
+class UFOSprite(AFOSprite):
+    """
+    Behaves like the base sprite and adds rotation.
+    
+    """
+    
+    def __init__(self, image):
+        AFOSprite.__init__(self, image)
+        self.angle = 0
+        
+    def update(self):
+        AFOSprite.update(self)
+        self.angle = (self.angle + 10) % 360
+        self.image = pygame.transform.rotate(self.original_image, self.angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
+
 
 class FighterJetSprite(pygame.sprite.Sprite):
     
@@ -317,8 +334,8 @@ class View(object):
         # sprite sheets
         self.parts_sprite_sheet = pygame.image.load(os.path.join('..', 'data', 'parts.png')).convert()
         self.parts_sprite_sheet.set_colorkey(TRANSPARENT)
-        self.ufo_sprite_sheet = pygame.image.load(os.path.join('..', 'data', 'ufo-sprites.png')).convert()
-        self.ufo_sprite_sheet.set_colorkey(TRANSPARENT)
+        self.player_craft_sheet = pygame.image.load(os.path.join('..', 'data', 'ufo-sprites.png')).convert()
+        self.player_craft_sheet.set_colorkey(TRANSPARENT)
         self.explosion_sprite_sheet = pygame.image.load(os.path.join('..', 'data', 'explosion3.png')).convert()
         self.explosion_sprite_sheet.set_colorkey(TRANSPARENT)
         
@@ -338,7 +355,7 @@ class View(object):
         self.agent_image = pygame.image.load(os.path.join('..', 'data', 'agent.png')).convert()
         
         # player objects
-        self.ufo_sprite = None
+        self.player_craft = None
         
         # delay exit state
         self.exit_counter = None
@@ -354,7 +371,7 @@ class View(object):
             self.background = pygame.image.load(os.path.join('..', 'data', 'menu-screen.png')).convert()
         if self.model.state == STATE_BUILD:
             self.background = pygame.image.load(os.path.join('..', 'data', 'build-screen.png')).convert()
-        if self.model.state == STATE_UFO:
+        if self.model.state in (STATE_UFO, STATE_FLIGHT):
             self.background = pygame.image.load(os.path.join('..', 'data', 'ufo-screen.png')).convert()
         if self.model.state == STATE_RESULTS:
             self.background = pygame.image.load(os.path.join('..', 'data', 'results-screen.png')).convert()
@@ -380,15 +397,25 @@ class View(object):
             else:
                 print('warning: part "%s" has no image rect definition' % (part,))
         
-    def load_ufo_sprites(self):
+    def load_player_craft_sprites(self):
             
         self.sprites = []
-        # player ufo craft
+        
+        # player craft
+        player = None
+        
         # start off at the bottom center of the screen
-        self.ufo_sprite = UFOSprite(self.ufo_sprite_sheet.subsurface(UFO_RECT))
-        self.ufo_sprite.fly_region = CANVAS_SIZE[1] / 2
-        self.ufo_sprite.rect.center = (CANVAS_SIZE[0] / 2, CANVAS_SIZE[1])
-        self.sprites.append(self.ufo_sprite)
+        if self.model.state == STATE_UFO:
+            player = UFOSprite(self.player_craft_sheet.subsurface(UFO_RECT))
+
+        elif self.model.state == STATE_FLIGHT:
+            player = AFOSprite(self.player_craft_sheet.subsurface(LIGHTFIGHTER_RECT))
+
+        if player:
+            player.fly_region = CANVAS_SIZE[1] / 2
+            player.rect.center = (CANVAS_SIZE[0] / 2, CANVAS_SIZE[1])
+            self.sprites.append(player)
+            self.player_craft = player
 
     def add_fighter_jet(self):
         """
@@ -396,10 +423,10 @@ class View(object):
         
         """
         
-        if self.ufo_sprite:
+        if self.player_craft:
             jet = FighterJetSprite(
-                self.ufo_sprite_sheet.subsurface(FIGHTER_RECT),
-                self.ufo_sprite)
+                self.player_craft_sheet.subsurface(FIGHTER_RECT),
+                self.player_craft)
             jet.rect.top = CANVAS_SIZE[1]
             jet.rect.left = random.randint(100, 400)
             self.sprites.append(jet)
@@ -411,7 +438,7 @@ class View(object):
         """
         
         missile = MissileSprite(
-            self.ufo_sprite_sheet.subsurface(MISSILE_RECT))
+            self.player_craft_sheet.subsurface(MISSILE_RECT))
         missile.rect.center = jet.rect.center
         missile.rect.left += (26 * random.randint(-1, 1))
         self.sprites.append(missile)
@@ -488,7 +515,7 @@ class View(object):
                 sprite.update()
                 self.canvas.blit(sprite.image, sprite.rect)
 
-        elif self.model.state == STATE_UFO:
+        elif self.model.state in (STATE_UFO, STATE_FLIGHT):
             
             # radar
             self.draw_tactical_radar()
@@ -514,18 +541,18 @@ class View(object):
                         self.fire_jet_missile(sprite)
                         
                 elif isinstance(sprite, MissileSprite):
-                    if self.ufo_sprite.health > 0:
-                        if self.ufo_sprite.rect.colliderect(sprite.rect):
+                    if self.player_craft.health > 0:
+                        if self.player_craft.rect.colliderect(sprite.rect):
                             # TODO hit sound and explosion
                             garbage_sprites.append(sprite)
-                            self.ufo_sprite.take_damage()
-                            if self.ufo_sprite.health > 0:
+                            self.player_craft.take_damage()
+                            if self.player_craft.health > 0:
                                 self.create_explosion(sprite, is_small=True)
                             else:
                                 self.create_explosion(sprite, is_small=False)
                                 
-                elif isinstance(sprite, UFOSprite):
-                    if self.ufo_sprite.health == 0 and not self.exit_counter:
+                elif isinstance(sprite, AFOSprite):
+                    if self.player_craft.health == 0 and not self.exit_counter:
                         self.exit_counter = 100
                         garbage_sprites.append(sprite)
                         
@@ -569,7 +596,7 @@ class View(object):
         
         # base image
         self.canvas.blit(
-            self.ufo_sprite_sheet.subsurface(RADAR_RECT),
+            self.player_craft_sheet.subsurface(RADAR_RECT),
             (10, 10))
         
         # enemy fighters
@@ -581,7 +608,7 @@ class View(object):
                 50 + ((enemy / 500.0) * 40)
                 )
             self.canvas.blit(
-                self.ufo_sprite_sheet.subsurface(RADAR_HOSTILE_RECT),
+                self.player_craft_sheet.subsurface(RADAR_HOSTILE_RECT),
                 epos)
 
         # dot for goal distance
@@ -590,12 +617,12 @@ class View(object):
             50 - ((self.model.ufotactical.distance_from_goal / 2000.0) * 40)
             )
         self.canvas.blit(
-            self.ufo_sprite_sheet.subsurface(RADAR_GOAL_RECT),
+            self.player_craft_sheet.subsurface(RADAR_GOAL_RECT),
             epos)
 
     def draw_ufo_help(self):
         
-        if self.model.state == STATE_UFO:
+        if self.model.state in (STATE_UFO, STATE_FLIGHT):
             # for the first few ticks
             if self.model.ufotactical.clock  < 250: #250
                 # draw the agent picture
@@ -605,7 +632,7 @@ class View(object):
                     self.canvas.blit(self.tactical_info_sprite, (220, 40))
             
     def draw_ufo_healthbar(self):
-        hp = self.ufo_sprite.health * 8 + 1
+        hp = self.player_craft.health * 8 + 1
         fullrect = pygame.Rect(10, 100, 80, 10)
         rect = pygame.Rect(10, 100, hp, 10)
         pygame.draw.rect(self.canvas, RED, fullrect, 0)
@@ -653,7 +680,7 @@ class View(object):
 
             BRIEF_TEXT_HEIGHT = 150
 
-            brief_text = model_builder.LEVEL_SCENARIOS[self.model.level - 1]
+            brief_text = LEVEL_SCENARIOS[self.model.level - 1]
             if self.model.level > 1:
                 if self.model.mission_success:
                     brief_text = 'My commendations on your last ' \
@@ -675,7 +702,7 @@ class View(object):
             sprite.rect = pygame.Rect((0, 0), (image.get_width(), BRIEF_TEXT_HEIGHT))
             self.brief_sprite = sprite
         
-        elif self.model.state == STATE_UFO:
+        elif self.model.state in (STATE_UFO, STATE_FLIGHT):
             
             self.tactical_info_sprite = self.print_wrapped_text(
                 'Avoid gunfire until you reach the target zone. ' \
@@ -705,7 +732,7 @@ class View(object):
         print('view event "%s" => %s' % (event_name, data))
         
         if event_name == 'levelup':
-            self.ufo_sprite = None
+            self.player_craft = None
             
         elif event_name == 'state':
             self.load_background()
@@ -715,9 +742,9 @@ class View(object):
                 self.exit_counter = None
                 self.load_build_sprites()
             
-            if self.model.state == STATE_UFO and not self.ufo_sprite:
+            if self.model.state in (STATE_UFO, STATE_FLIGHT) and not self.player_craft:
                 self.draw_briefing_words()
-                self.load_ufo_sprites()
+                self.load_player_craft_sprites()
                 
             if self.model.state == STATE_RESULTS:
                 self.draw_briefing_words()
@@ -755,7 +782,9 @@ class View(object):
             if affirm.collidepoint(xy):
                 
                 if self.confirm_action == 'plant':
-                    self.model.set_state(STATE_UFO)
+                    print('level is', self.model.level)
+                    print('tactical mode is', TACTICAL_TYPE[self.model.level])
+                    self.model.set_state(TACTICAL_TYPE[self.model.level])
                 
                 self.confirm_action = None
                 
