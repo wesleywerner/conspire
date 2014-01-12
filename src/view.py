@@ -32,6 +32,11 @@ PARTS_RECT = {
     'alien left arm': (129,47,18,81),
     'alien right leg': (88,130,20,69),
     'alien left leg': (115,130,20,69),
+    
+    'trex torso': (242,51,92,117),
+    'trex head': (174,123,56,72),
+    'trex tail': (160,0,131,46),
+    'trex legs': (168,53,66,63),
 }
 
 UFO_RECT = (6,6,88,88)
@@ -808,6 +813,9 @@ class View(object):
             for sprite in self.sprites:
                 if sprite.rect.collidepoint(xy):
                     self.dragging_sprite = sprite
+                    # place dragging sprite on top
+                    self.sprites.remove(self.dragging_sprite)
+                    self.sprites.append(self.dragging_sprite)
                     return
 
             # plant button click
