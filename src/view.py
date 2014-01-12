@@ -57,6 +57,15 @@ PARTS_RECT = {
     'bank accounts': (677,0,75,100),
     'website passwords': (677,0,75,100),
     'IP address scamlist': (677,0,75,100),
+    'codex page I': (677,0,75,100),
+    'codex page II': (677,0,75,100),
+    'codex page III': (677,0,75,100),
+    'codex page IV': (677,0,75,100),
+    'codex page V': (677,0,75,100),
+    'codex page VI': (677,0,75,100),
+    'biblical references': (677,0,75,100),
+    'book of psalms': (677,0,75,100),
+    'book of tomas': (677,0,75,100),
     
 }
 
