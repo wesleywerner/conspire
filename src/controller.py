@@ -49,6 +49,12 @@ class Controller(object):
                     # results screen moves to the next level
                     elif self.model.state == STATE_RESULTS:
                         self.model.level += 1
+                        
+                # skip
+                elif event.key == K_F9:
+                    self.model.level += 1
+                    self.model.set_state(STATE_BUILD)
+                
                 else:
                     view.keyDown(event.key)
                     
