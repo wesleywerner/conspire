@@ -42,16 +42,21 @@ LEVEL_SCENARIOS = (
     "life as we know it. These interests are kept above top secret, " \
     "privately funded with access to any level of government." \
     "\n" \
-    "We have a situation with one of our underground testing fascilities, " \
-    "rumors are spreading of it's existence, and we cannot allow this. " \
-    "We need a distraction for the media. " \
+    "We have 'collected' a problematic official we suspect is a double agent. " \
+    "We are going to make them disappear by faking their death. " \
     "\n" \
-    "Construct an alien body in the green area, as accurately as possbile." \
+    "Construct a fake human body in the green area, as accurately as possbile." \
     "\n" \
     "When you are done proceed to plant the evidence.",
     
     "We are in the business of predicting the future, " \
     "and the best way to predict the future, is to invent it. " \
+    "\n" \
+    "We have a situation with one of our underground testing fascilities, " \
+    "rumors are spreading of it's existence, and we cannot allow this. " \
+    "We need a distraction for the media. " \
+    "\n" \
+    "Construct an alien body in the green area, as accurately as possbile." \
     "\n" \
     "",
     "" \
