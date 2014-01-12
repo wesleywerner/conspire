@@ -3,6 +3,7 @@ STATE_BUILD = 2
 STATE_UFO = 3
 STATE_FLIGHT = 4
 STATE_RESULTS = 5
+STATE_END = 100
 
 # parts available for use per level number.
 LEVEL_PARTS = {
@@ -74,12 +75,11 @@ LEVEL_SCENARIOS = (
     "\n" \
     "Good luck, and welcome to the team, Agent!",
 
-
     "We have 'collected' a problematic official we suspect is a double agent. " \
     "We are going to make them disappear by faking their death. " \
     "\n" \
     "Construct a fake human body in the green area, as accurately as possbile." \
-    "\n" \
+    "",
     
     "We are in the business of predicting the future, " \
     "and the best way to predict the future, is to invent it!" \
@@ -88,14 +88,15 @@ LEVEL_SCENARIOS = (
     "rumors are spreading of it's existence, and we cannot allow this. " \
     "We need a distraction for the media." \
     "",
-    
-    "scenario #3",
-    "scenario #4",
-    "scenario #5",
+
 )
 
 # determine the type of the item to build, maps to levels.
 ITEM_TYPES = (
+    'body',
+    'body',
+    'body',
+    'body',
     'body',
     'body',
     'body',
@@ -105,5 +106,9 @@ ITEM_TYPES = (
 TACTICAL_TYPE = (
     0,
     STATE_FLIGHT,
+    STATE_UFO,
+    STATE_UFO,
+    STATE_UFO,
+    STATE_UFO,
     STATE_UFO,
 )
