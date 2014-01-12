@@ -31,7 +31,6 @@ class Builder(object):
         
         # add some random parts from other levels
         for n in range(1, random.randint(0, self.model.level)):
-            print('including another')
             combined.append(
                 random.choice(
                     LEVEL_PARTS[random.randint(1, len(LEVEL_PARTS))]
