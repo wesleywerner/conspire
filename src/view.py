@@ -224,7 +224,7 @@ class FighterJetSprite(pygame.sprite.Sprite):
         elif self.exitpilot:
             if self.rect.top < CANVAS_SIZE[1]:
                 self.rect.left += 2
-                self.rect.top += 4
+                self.rect.top += 2
         else:
         
             # move inline with target and fire when ready and able.
